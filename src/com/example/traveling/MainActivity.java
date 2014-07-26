@@ -4,14 +4,12 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import 	android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentActivity;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.ConnectionResult;
 import android.util.Log;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 	String TAG;
 	
 	@Override
