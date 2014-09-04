@@ -38,6 +38,11 @@
             </intent-filter>
             
         </activity>
+        
+        <activity
+            android:name="com.example.traveling.InfoActivity"
+            android:label="@string/app_name" >            
+        </activity>
     </application>
 
 </manifest>
