@@ -99,7 +99,6 @@ public class MainActivity extends FragmentActivity {
         
         //側選單點選偵聽器
         MLDrawer.setOnItemClickListener(new DrawerItemClickListener());
-    
 	}
 
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -116,22 +115,27 @@ public class MainActivity extends FragmentActivity {
 		Fragment fragment = null;
 		FragmentManager fm = getFragmentManager();
 		
+		/* Used for changing activity */
 		//Intent intent = new Intent();
 		//intent.setClass(MainActivity.this, InfoActivity.class);
 		//Bundle bundle = new Bundle();
 		
 		switch(position){
-			case 0:
+			case 0:	// Home
 				fm.beginTransaction().add(R.id.content_frame, getFragmentManager().findFragmentById(R.id.map)).commit();
 				break;
-			case 1:
+			case 1:	// Profile
 				fragment = new FragmentFavorite();
 				//fm.beginTransaction().remove(getFragmentManager().findFragmentById(R.id.map)).commit();
 				fm.beginTransaction().replace(R.id.content_frame, fragment).commit(); 
+				
+				/* Used for changing activity */
 				//intent.setFlags(1);
 				//startActivity(intent);
 				break;
-			case 2:
+			case 2:	// Favorite
+				
+				/* Used for changing activity */
 				//intent.setFlags(2);
 				//startActivity(intent);
 				break;
