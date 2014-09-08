@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -28,6 +29,7 @@ public class MainActivity extends FragmentActivity {
 	private ActionBarDrawerToggle drawerToggle;
 	private CharSequence DrawerTitle;
     private CharSequence Title;
+    private int currentViewId = -1;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,7 @@ public class MainActivity extends FragmentActivity {
 	
 	private void initDrawer(){
 		setContentView(R.layout.drawer);
+		setCurrentViewById(R.id.content_frame);
 		MenuList = (DrawerLayout) findViewById(R.id.drawer_layout);
         MLDrawer = (ListView) findViewById(R.id.left_drawer);
         
@@ -108,12 +111,15 @@ public class MainActivity extends FragmentActivity {
 	    }
 	}
 	
+	//Change main content view when click items in the drawer 
 	private void selectItem(int position){
 		String[] drawer_menu = this.getResources().getStringArray(R.array.drawer_menu);
 		
-		// Create a new fragment and specify the planet to show based on position
-		Fragment fragment = null;
-		FragmentManager fm = getFragmentManager();
+		// Remove current view
+		View OriginalView = findViewById(getCurrentViewById());
+		ViewGroup parent = (ViewGroup)OriginalView.getParent();
+		final int index = parent.indexOfChild(OriginalView);
+		parent.removeView(OriginalView);
 		
 		/* Used for changing activity */
 		//Intent intent = new Intent();
@@ -122,19 +128,16 @@ public class MainActivity extends FragmentActivity {
 		
 		switch(position){
 			case 0:	// Home
-				fm.beginTransaction().add(R.id.content_frame, getFragmentManager().findFragmentById(R.id.map)).commit();
+				setCurrentViewById(R.id.content_frame);
 				break;
 			case 1:	// Profile
-				fragment = new FragmentFavorite();
-				//fm.beginTransaction().remove(getFragmentManager().findFragmentById(R.id.map)).commit();
-				fm.beginTransaction().replace(R.id.content_frame, fragment).commit(); 
-				
+				setCurrentViewById(R.layout.fragment_profile);
 				/* Used for changing activity */
 				//intent.setFlags(1);
 				//startActivity(intent);
 				break;
 			case 2:	// Favorite
-				
+				setCurrentViewById(R.layout.fragment_favorite);
 				/* Used for changing activity */
 				//intent.setFlags(2);
 				//startActivity(intent);
@@ -143,10 +146,21 @@ public class MainActivity extends FragmentActivity {
 				return;
 		}
 		
+		View NewView = getLayoutInflater().inflate(getCurrentViewById(),parent,false);
+		parent.addView(NewView, index);
+		
 	    // Highlight the selected item, update the title, and close the drawer
 		MLDrawer.setItemChecked(position, true);
 	    setTitle(drawer_menu[position]);
 	    MenuList.closeDrawer(MLDrawer);
+	}
+	
+	public void setCurrentViewById(int id){
+		currentViewId = id;
+	}
+	
+	public int getCurrentViewById(){
+		return currentViewId;
 	}
 	
 	public void showRestaurant(View view){
