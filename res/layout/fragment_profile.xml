@@ -1,7 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+	<!-- The main content view -->
+    <LinearLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
         
-<TextView	xmlns:android="http://schemas.android.com/apk/res/android"
-        	android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-        	android:text="@string/restaurant">
-</TextView>
+  	   <TableLayout
+  	       android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:layout_gravity="center">
+           
+  	       <TableRow 
+  	           android:layout_width="match_parent"
+  	           android:layout_height="48dp"
+  	           android:background="@drawable/ic_user">
+  	           <Button
+       	       	   android:layout_width="wrap_content"
+       	       	   android:layout_height="wrap_content"
+       	       	   android:text="SETTING"/>
+  	       </TableRow>
+  	       
+  	       <TableRow 
+  	           android:layout_width="match_parent"
+  	           android:layout_height="48dp">
+  	           <Button
+  	               android:layout_width="wrap_content"
+       	       	   android:layout_height="wrap_content"
+       	           android:text="我的日誌"/>
+  	       </TableRow>
+  	       
+  	       <TableRow 
+  	           android:layout_width="match_parent"
+  	           android:layout_height="48dp">
+  	           <Button
+  	               android:layout_width="wrap_content"
+       	       	   android:layout_height="wrap_content"
+       	           android:text="我的收藏"/>
+  	       </TableRow>
+  	       
+  	       <TableRow 
+  	           android:layout_width="match_parent"
+  	           android:layout_height="48dp">
+  	           <Button
+  	               android:layout_width="wrap_content"
+       	       	   android:layout_height="wrap_content"
+       	           android:text="我的訂閱"/>
+  	       </TableRow>
+  	       
+  	       <TableRow 
+  	           android:layout_width="match_parent"
+  	           android:layout_height="48dp">
+  	           <Button
+  	               android:layout_width="wrap_content"
+       	       	   android:layout_height="wrap_content"
+       	           android:text="我的路線"/>
+  	       </TableRow>
+  	   </TableLayout>        	
+    </LinearLayout>	
+    
+	<!-- The navigation drawer -->
+    <ListView android:id="@+id/left_drawer"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:background="#111"/>
+</android.support.v4.widget.DrawerLayout>

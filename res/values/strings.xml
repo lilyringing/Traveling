@@ -11,6 +11,11 @@
         <item >Home</item>
         <item >Profile</item>
         <item >Favorite</item>
+        <item >Route</item>
+        <item >Social</item>
+        <item >Help</item>
+        <item >About</item>
+        <item >Setting</item>
     </string-array>
     <string name="item">item</string>
     <string name="my_favorite">我的收藏</string>

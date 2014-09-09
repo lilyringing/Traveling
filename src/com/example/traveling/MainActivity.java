@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.app.FragmentTransaction;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
@@ -20,21 +21,26 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.maps.SupportMapFragment;
 import android.util.Log;
 
 public class MainActivity extends FragmentActivity {
 	String TAG;
+	View map;
 	private DrawerLayout MenuList;
 	private ListView MLDrawer;
 	private ActionBarDrawerToggle drawerToggle;
 	private CharSequence DrawerTitle;
     private CharSequence Title;
-    private int currentViewId = -1;
+    private int view;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		map = getLayoutInflater().inflate(R.layout.drawer, null);
+		setContentView(map);
+		view = 0;
 		initActionBar();
 		initDrawer();
 		initDrawerList();
@@ -63,8 +69,6 @@ public class MainActivity extends FragmentActivity {
 	}
 	
 	private void initDrawer(){
-		setContentView(R.layout.drawer);
-		setCurrentViewById(R.id.content_frame);
 		MenuList = (DrawerLayout) findViewById(R.id.drawer_layout);
         MLDrawer = (ListView) findViewById(R.id.left_drawer);
         
@@ -115,52 +119,33 @@ public class MainActivity extends FragmentActivity {
 	private void selectItem(int position){
 		String[] drawer_menu = this.getResources().getStringArray(R.array.drawer_menu);
 		
-		// Remove current view
-		View OriginalView = findViewById(getCurrentViewById());
-		ViewGroup parent = (ViewGroup)OriginalView.getParent();
-		final int index = parent.indexOfChild(OriginalView);
-		parent.removeView(OriginalView);
-		
-		/* Used for changing activity */
-		//Intent intent = new Intent();
-		//intent.setClass(MainActivity.this, InfoActivity.class);
-		//Bundle bundle = new Bundle();
-		
-		switch(position){
-			case 0:	// Home
-				setCurrentViewById(R.id.content_frame);
-				break;
-			case 1:	// Profile
-				setCurrentViewById(R.layout.fragment_profile);
-				/* Used for changing activity */
-				//intent.setFlags(1);
-				//startActivity(intent);
-				break;
-			case 2:	// Favorite
-				setCurrentViewById(R.layout.fragment_favorite);
-				/* Used for changing activity */
-				//intent.setFlags(2);
-				//startActivity(intent);
-				break;
-			default:
-				return;
+		if(view != position){
+			switch(position){
+				case 0:	// Home
+					setContentView(map);
+					view = 0;
+					break;
+				case 1:	// Profile
+					setContentView(R.layout.fragment_profile);
+					view = 1;
+					break;
+				case 2:	// Favorite
+					setContentView(R.layout.fragment_favorite);
+					view = 2;
+					break;
+				default:
+					return;
+			}	
+			
+			initDrawer();
+			initDrawerList();
+			// Highlight the selected item, update the title, and close the drawer
+			MLDrawer.setItemChecked(position, true);
+			setTitle(drawer_menu[position]);
+			MenuList.closeDrawer(MLDrawer);
+		}else{
+			return;
 		}
-		
-		View NewView = getLayoutInflater().inflate(getCurrentViewById(),parent,false);
-		parent.addView(NewView, index);
-		
-	    // Highlight the selected item, update the title, and close the drawer
-		MLDrawer.setItemChecked(position, true);
-	    setTitle(drawer_menu[position]);
-	    MenuList.closeDrawer(MLDrawer);
-	}
-	
-	public void setCurrentViewById(int id){
-		currentViewId = id;
-	}
-	
-	public int getCurrentViewById(){
-		return currentViewId;
 	}
 	
 	public void showRestaurant(View view){
