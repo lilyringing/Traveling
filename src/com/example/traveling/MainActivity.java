@@ -6,23 +6,33 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Gravity;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.ExpandableListView;
 import android.app.FragmentTransaction;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.app.DialogFragment;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.maps.SupportMapFragment;
 import android.util.Log;
+import org.json.*;
+
 
 public class MainActivity extends FragmentActivity {
 	String TAG;
@@ -38,12 +48,17 @@ public class MainActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		// Set map view
 		map = getLayoutInflater().inflate(R.layout.drawer, null);
 		setContentView(map);
 		view = 0;
 		initActionBar();
 		initDrawer();
 		initDrawerList();
+		
+		// Create another thread for network access
+		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites().detectNetwork().penaltyLog().build());  
+	    StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects().penaltyLog().penaltyDeath().build()); 
 	}
 	
 	@Override
@@ -104,7 +119,7 @@ public class MainActivity extends FragmentActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.drawer_list_item, drawer_menu);
         MLDrawer.setAdapter(adapter);
         
-        //側選單點選偵聽器
+        //�湧�桅��詨�賢
         MLDrawer.setOnItemClickListener(new DrawerItemClickListener());
 	}
 
@@ -127,6 +142,9 @@ public class MainActivity extends FragmentActivity {
 					break;
 				case 1:	// Profile
 					setContentView(R.layout.fragment_profile);
+					ExpandableListView elv = (ExpandableListView) findViewById(R.id.profile_list);
+					//ExpandableAdapter viewAdapter = ExpandableListView.getAdapter();
+					//elv.setAdapter();
 					view = 1;
 					break;
 				case 2:	// Favorite
@@ -148,8 +166,51 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 	
+	public void showMyDiary(View view){
+		TableLayout my_diary = (TableLayout)findViewById(R.id.my_diary);
+        my_diary.setStretchAllColumns(true);
+        TableLayout.LayoutParams row_layout = new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        TableRow.LayoutParams view_layout = new TableRow.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        try {
+        	System.out.println("Send query");
+            String result = DBconnector.executeQuery("SELECT * FROM user");
+            
+            /* When SQL results contain many data using JSONArray
+               If only one data use JSONObject
+               JSONObject jsonData = new JSONObject(result);*/
+            System.out.println(result);
+            JSONArray jsonArray = new JSONArray(result);
+            for(int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonData = jsonArray.getJSONObject(i);
+                TableRow tr = new TableRow(MainActivity.this);
+                tr.setLayoutParams(row_layout);
+                tr.setGravity(Gravity.CENTER_HORIZONTAL);
+                
+                TextView user_acc = new TextView(MainActivity.this);
+                user_acc.setText(jsonData.getString("account"));
+                user_acc.setLayoutParams(view_layout);
+                
+                TextView user_pwd = new TextView(MainActivity.this);
+                user_pwd.setText(jsonData.getString("pwd"));
+                user_pwd.setLayoutParams(view_layout);
+                
+                tr.addView(user_acc);
+                tr.addView(user_pwd);
+                my_diary.addView(tr);
+            }
+        } catch(Exception e) {
+            // Log.e("log_tag", e.toString());
+        }
+	}
+	
 	public void showRestaurant(View view){
-		
+		DialogFragment RestaurantDialog = new MapDialog();
+		RestaurantDialog.show(getSupportFragmentManager(),"Restaurant");
+	}
+	
+	public void showSpot(View view){
+		DialogFragment SpotDialog = new MapDialog();
+		SpotDialog.show(getSupportFragmentManager(),"Spot");
 	}
 	
 	/*private void checkGooglePlayServices(){

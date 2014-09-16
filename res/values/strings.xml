@@ -21,5 +21,31 @@
     <string name="my_favorite">我的收藏</string>
     <string name="restaurant">餐廳</string>
     <string name="spot">景點</string>
+    <string-array name="spot_menu">
+        <item >親子旅遊</item>
+        <item >歷史古蹟</item>
+        <item >夜景</item>
+        <item >夜市</item>
+        <item >登山步道</item>
+        <item >藝文展覽</item>
+        <item >宗教</item>
+        <item >觀光農場</item>
+        <item >購物</item>
+        <item >電影院</item>
+    </string-array>
+    <string-array name="restaurant_menu">
+        <item >早餐</item>
+        <item >午餐</item>
+        <item >晚餐</item>
+        <item >下午茶/咖啡廳</item>
+        <item >消夜</item>
+        <item >點心</item>
+        <item >中式料理</item>
+        <item >西式料理</item>
+        <item >日式料理</item>
+        <item >異國料理</item>
+        <item >素食</item>
+        <item >速食</item>
+    </string-array>
 
 </resources>
