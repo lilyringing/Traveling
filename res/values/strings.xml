@@ -47,5 +47,6 @@
         <item >素食</item>
         <item >速食</item>
     </string-array>
+    <string name="search_hint">hint</string>
 
 </resources>

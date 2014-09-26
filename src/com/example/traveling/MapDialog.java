@@ -20,4 +20,8 @@ public class MapDialog extends DialogFragment {
         // Create the AlertDialog object and return it
         return builder.create();
     }
+    
+    /*public static MapDialog newInstance(String title, String message){
+    	
+    }*/
 }

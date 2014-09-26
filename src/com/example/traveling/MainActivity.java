@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.SearchManager;
 import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.Menu;
@@ -27,8 +29,10 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.SearchView;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import android.util.Log;
 import org.json.*;
@@ -43,7 +47,7 @@ public class MainActivity extends FragmentActivity {
 	private CharSequence DrawerTitle;
     private CharSequence Title;
     private int view;
-	
+	private GoogleMap gmap;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -64,7 +68,7 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
-		menu.findItem(R.id.action_search).getActionView();
+		
 		
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -142,7 +146,7 @@ public class MainActivity extends FragmentActivity {
 					break;
 				case 1:	// Profile
 					setContentView(R.layout.fragment_profile);
-					ExpandableListView elv = (ExpandableListView) findViewById(R.id.profile_list);
+					//ExpandableListView elv = (ExpandableListView) findViewById(R.id.profile_list);
 					//ExpandableAdapter viewAdapter = ExpandableListView.getAdapter();
 					//elv.setAdapter();
 					view = 1;
@@ -204,13 +208,25 @@ public class MainActivity extends FragmentActivity {
 	}
 	
 	public void showRestaurant(View view){
+		/*Bundle bun = new Bundle();
+		bun.putInt("title", R.string.restaurant);
+		bun.putInt("items", R.array.restaurant_menu);*/
+		
 		DialogFragment RestaurantDialog = new MapDialog();
 		RestaurantDialog.show(getSupportFragmentManager(),"Restaurant");
 	}
 	
 	public void showSpot(View view){
+		//Fragment f = new DialogFragment();
+		
+		/*Bundle bun = new Bundle();
+		bun.putInt("title", R.string.spot);
+		bun.putInt("items", R.array.spot_menu);*/
+		
 		DialogFragment SpotDialog = new MapDialog();
 		SpotDialog.show(getSupportFragmentManager(),"Spot");
+		
+		 //gmap = getMap();
 	}
 	
 	/*private void checkGooglePlayServices(){
