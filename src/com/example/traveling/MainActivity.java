@@ -208,22 +208,12 @@ public class MainActivity extends FragmentActivity {
 	}
 	
 	public void showRestaurant(View view){
-		/*Bundle bun = new Bundle();
-		bun.putInt("title", R.string.restaurant);
-		bun.putInt("items", R.array.restaurant_menu);*/
-		
-		DialogFragment RestaurantDialog = new MapDialog();
+		DialogFragment RestaurantDialog = MapDialog.newInstance(R.string.restaruant, R.array.restaurant_menu);
 		RestaurantDialog.show(getSupportFragmentManager(),"Restaurant");
 	}
 	
 	public void showSpot(View view){
-		//Fragment f = new DialogFragment();
-		
-		/*Bundle bun = new Bundle();
-		bun.putInt("title", R.string.spot);
-		bun.putInt("items", R.array.spot_menu);*/
-		
-		DialogFragment SpotDialog = new MapDialog();
+		DialogFragment RestaurantDialog = MapDialog.newInstance(R.string.spot, R.array.spot_menu);
 		SpotDialog.show(getSupportFragmentManager(),"Spot");
 		
 		 //gmap = getMap();
