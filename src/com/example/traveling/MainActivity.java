@@ -33,7 +33,9 @@ import android.support.v7.widget.SearchView;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.LatLng;
 import android.util.Log;
 import org.json.*;
 
@@ -48,6 +50,7 @@ public class MainActivity extends FragmentActivity {
     private CharSequence Title;
     private int view;
 	private GoogleMap gmap;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -63,6 +66,21 @@ public class MainActivity extends FragmentActivity {
 		// Create another thread for network access
 		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites().detectNetwork().penaltyLog().build());  
 	    StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects().penaltyLog().penaltyDeath().build()); 
+	    
+	   
+	}
+	
+	@Override
+	public void onDestroy(){
+		//try{
+			super.onDestroy();
+			Fragment f = getFragmentManager().findFragmentById(R.id.map);
+		    if (f != null) 
+		        getFragmentManager().beginTransaction().remove(f).commit();
+			
+		//}catch(NullPointerException e){
+		//	Log.d("onDestroy", "NullPointerException:" + e);
+		//}
 	}
 	
 	@Override
@@ -208,15 +226,18 @@ public class MainActivity extends FragmentActivity {
 	}
 	
 	public void showRestaurant(View view){
-		DialogFragment RestaurantDialog = MapDialog.newInstance(R.string.restaruant, R.array.restaurant_menu);
+		DialogFragment RestaurantDialog = MapDialog.newInstance(R.string.restaurant, R.array.restaurant_menu);
 		RestaurantDialog.show(getSupportFragmentManager(),"Restaurant");
 	}
 	
 	public void showSpot(View view){
-		DialogFragment RestaurantDialog = MapDialog.newInstance(R.string.spot, R.array.spot_menu);
+		DialogFragment SpotDialog = MapDialog.newInstance(R.string.spot, R.array.spot_menu);
 		SpotDialog.show(getSupportFragmentManager(),"Spot");
 		
-		 //gmap = getMap();
+		 /*gmap = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
+		    gmap.addMarker(new MarkerOptions()
+	        	.position(new LatLng(10, 10))
+	        	.title("Hello world"));*/
 	}
 	
 	/*private void checkGooglePlayServices(){

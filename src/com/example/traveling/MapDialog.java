@@ -7,19 +7,19 @@ import android.content.DialogInterface;
 import android.support.v4.app.DialogFragment;
 
 public class MapDialog extends DialogFragment {
-    public static MapDialog newInstance(String title, String list){
+    public static MapDialog newInstance(int title, int list){
         MapDialog mp = new MapDialog();
         Bundle bun = new Bundle();
-        bun.putString("title", title);
-        bun.putString("list", list);
+        bun.putInt("title", title);
+        bun.putInt("list", list);
         mp.setArguments(bun);
         return mp;
     }
     
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        String title = getArguments.getString("title");
-        String list = getArguments.getString("list");
+        int title = getArguments().getInt("title");
+        int list = getArguments().getInt("list");
         
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
