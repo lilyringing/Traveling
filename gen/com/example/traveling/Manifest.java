@@ -10,6 +10,5 @@ package com.example.traveling;
 public final class Manifest {
     public static final class permission {
         public static final String MAPS_RECEIVE="com.example.traveling.permission.MAPS_RECEIVE";
-        public static final String SYSTEM_UI_VISIBILITY_EXTENSIONS="com.sonymobile.permission.SYSTEM_UI_VISIBILITY_EXTENSIONS";
     }
 }

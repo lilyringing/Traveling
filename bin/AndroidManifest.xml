@@ -8,7 +8,6 @@
         android:minSdkVersion="14"
         android:targetSdkVersion="14" />
     <permission android:name="com.example.traveling.permission.MAPS_RECEIVE" android:protectionLevel="signature"></permission>
-    <permission android:name="com.sonymobile.permission.SYSTEM_UI_VISIBILITY_EXTENSIONS"></permission>
     <uses-permission android:name="com.example.traveling.permission.MAPS_RECEIVE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
