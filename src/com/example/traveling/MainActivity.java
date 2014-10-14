@@ -1,5 +1,8 @@
 package com.example.traveling;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
@@ -36,51 +39,81 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.LatLng;
+import android.content.res.Configuration;
 import android.util.Log;
 import org.json.*;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.SupportMapFragment;
 
 
 public class MainActivity extends FragmentActivity {
 	String TAG;
 	View map;
-	private DrawerLayout MenuList;
-	private ListView MLDrawer;
+	private DrawerLayout dLayout;
+	private ListView dListView;
 	private ActionBarDrawerToggle drawerToggle;
 	private CharSequence DrawerTitle;
     private CharSequence Title;
+    CustomDrawerAdapter adapter;
+    List<DrawerItem> datalist;
+    
     private int view;
 	private GoogleMap gmap;
+	private MapFragment mapFragment;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		// Set map view
-		map = getLayoutInflater().inflate(R.layout.drawer, null);
-		setContentView(map);
-		view = 0;
-		initActionBar();
-		initDrawer();
-		initDrawerList();
+		setContentView(R.layout.drawer);
 		
+		// Initializing
+        datalist = new ArrayList<DrawerItem>();
+        Title = DrawerTitle = getTitle();
+        dLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        dListView = (ListView) findViewById(R.id.left_drawer);
+
+        dLayout.setDrawerShadow(R.drawable.drawer_shadow,GravityCompat.START);
+        datalist.add(new DrawerItem("Home", R.drawable.ic_action_search));
+        datalist.add(new DrawerItem("Profile", R.drawable.ic_action_search));
+        
+        adapter = new CustomDrawerAdapter(this, R.layout.custom_drawer_item,
+                datalist);
+
+        dListView.setAdapter(adapter);
+        dListView.setOnItemClickListener(new DrawerItemClickListener());
+        
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+         
+        drawerToggle = new ActionBarDrawerToggle(this, dLayout,
+                    R.drawable.ic_drawer, R.string.drawer_open,
+                    R.string.drawer_close) {
+              public void onDrawerClosed(View view) {
+                    getActionBar().setTitle(Title);
+                    invalidateOptionsMenu(); // creates call to
+                                             // onPrepareOptionsMenu()
+              }
+         
+              public void onDrawerOpened(View drawerView) {
+                    getActionBar().setTitle(DrawerTitle);
+                    invalidateOptionsMenu(); // creates call to
+                                             // onPrepareOptionsMenu()
+              }
+        };
+         
+        dLayout.setDrawerListener(drawerToggle);
+         
+        if (savedInstanceState == null) {
+              SelectItem(0);
+        }
+      
 		// Create another thread for network access
 		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites().detectNetwork().penaltyLog().build());  
 	    StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects().penaltyLog().penaltyDeath().build()); 
 	    
 	   
-	}
-	
-	@Override
-	public void onDestroy(){
-		//try{
-			super.onDestroy();
-			Fragment f = getFragmentManager().findFragmentById(R.id.map);
-		    if (f != null) 
-		        getFragmentManager().beginTransaction().remove(f).commit();
-			
-		//}catch(NullPointerException e){
-		//	Log.d("onDestroy", "NullPointerException:" + e);
-		//}
 	}
 	
 	@Override
@@ -91,100 +124,70 @@ public class MainActivity extends FragmentActivity {
 		return super.onCreateOptionsMenu(menu);
 	}
 	
+	public void SelectItem(int possition) {
+		 
+        Fragment fragment = null;
+        Bundle args = new Bundle();
+        switch (possition) {
+        case 0:
+        	fragment = new MapFragment();
+            break;
+        case 1:
+        	fragment = new ProfileFragment();
+            break;
+        default:
+            break;
+        }
+        
+        fragment.setArguments(args);
+        FragmentManager frgManager = getFragmentManager();
+        frgManager.beginTransaction().replace(R.id.content_frame, fragment)
+                  .commit();
+
+
+        dListView.setItemChecked(possition, true);
+        setTitle(datalist.get(possition).getItemName());
+        dLayout.closeDrawer(dListView);
+        
+    }
+     
+	
+	@Override
+	public void setTitle(CharSequence title) {
+	      Title = title;
+	      getActionBar().setTitle(Title);
+	}
+	 
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+	      super.onPostCreate(savedInstanceState);
+	      // Sync the toggle state after onRestoreInstanceState has occurred.
+	      drawerToggle.syncState();
+	}
+	 
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    //home
-	    if (drawerToggle.onOptionsItemSelected(item)) {
-	        return true;
-	    }
-
-	    return super.onOptionsItemSelected(item);
+	      // The action bar home/up action should open or close the drawer.
+	      // ActionBarDrawerToggle will take care of this.
+	      if (drawerToggle.onOptionsItemSelected(item)) {
+	            return true;
+	      }
+	 
+	      return false;
+	}
+	 
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+	      super.onConfigurationChanged(newConfig);
+	      // Pass any configuration change to the drawer toggles
+	      drawerToggle.onConfigurationChanged(newConfig);
 	}
 	
-	private void initActionBar(){
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setHomeButtonEnabled(true);
-	}
-	
-	private void initDrawer(){
-		MenuList = (DrawerLayout) findViewById(R.id.drawer_layout);
-        MLDrawer = (ListView) findViewById(R.id.left_drawer);
-        
-        //MenuList.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        
-        Title = DrawerTitle = getTitle();
-        drawerToggle = new ActionBarDrawerToggle(
-        		this, 
-                MenuList,
-                R.drawable.ic_drawer, 
-                R.string.drawer_open,
-                R.string.drawer_close) {
-        		
-        	@Override
-    		public void onDrawerClosed(View view) {
-    			super.onDrawerClosed(view);
-    			getActionBar().setTitle(Title);
-    		}
-
-    		@Override
-    		public void onDrawerOpened(View drawerView) {
-    			super.onDrawerOpened(drawerView);
-    			getActionBar().setTitle(DrawerTitle);
-    		}
-        };
-        
-        drawerToggle.syncState();
-        MenuList.setDrawerListener(drawerToggle);
-	}
-	
-	private void initDrawerList(){
-		String[] drawer_menu = this.getResources().getStringArray(R.array.drawer_menu);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.drawer_list_item, drawer_menu);
-        MLDrawer.setAdapter(adapter);
-        
-        //�湧�桅��詨�賢
-        MLDrawer.setOnItemClickListener(new DrawerItemClickListener());
-	}
-
-	private class DrawerItemClickListener implements ListView.OnItemClickListener {
-	    @Override
-	    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-	        selectItem(position);
-	    }
-	}
-	
-	//Change main content view when click items in the drawer 
-	private void selectItem(int position){
-		String[] drawer_menu = this.getResources().getStringArray(R.array.drawer_menu);
-		
-		if(view != position){
-			switch(position){
-				case 0:	// Home
-					setContentView(map);
-					view = 0;
-					break;
-				case 1:	// Profile
-					setContentView(R.layout.fragment_profile);
-					//ExpandableListView elv = (ExpandableListView) findViewById(R.id.profile_list);
-					//ExpandableAdapter viewAdapter = ExpandableListView.getAdapter();
-					//elv.setAdapter();
-					view = 1;
-					break;
-				case 2:	// Favorite
-					setContentView(R.layout.fragment_favorite);
-					view = 2;
-					break;
-				default:
-					return;
-			}	
-			
-			initDrawer();
-			initDrawerList();
-			// Highlight the selected item, update the title, and close the drawer
-			MLDrawer.setItemChecked(position, true);
-			setTitle(drawer_menu[position]);
-			MenuList.closeDrawer(MLDrawer);
-		}else{
-			return;
+	private class DrawerItemClickListener implements
+    	ListView.OnItemClickListener {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			SelectItem(position);
 		}
 	}
 	
@@ -233,39 +236,5 @@ public class MainActivity extends FragmentActivity {
 	public void showSpot(View view){
 		DialogFragment SpotDialog = MapDialog.newInstance(R.string.spot, R.array.spot_menu);
 		SpotDialog.show(getSupportFragmentManager(),"Spot");
-		
-		 /*gmap = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
-		    gmap.addMarker(new MarkerOptions()
-	        	.position(new LatLng(10, 10))
-	        	.title("Hello world"));*/
 	}
-	
-	/*private void checkGooglePlayServices(){
-	    int result = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-	    switch (result) {
-	        case ConnectionResult.SUCCESS:
-	            Log.d(TAG, "SUCCESS");
-	            break;
-
-	        case ConnectionResult.SERVICE_INVALID:
-	            Log.d(TAG, "SERVICE_INVALID");
-	            GooglePlayServicesUtil.getErrorDialog(ConnectionResult.SERVICE_INVALID, this, 0).show();
-	            break;
-
-	        case ConnectionResult.SERVICE_MISSING:
-	            Log.d(TAG, "SERVICE_MISSING");
-	            GooglePlayServicesUtil.getErrorDialog(ConnectionResult.SERVICE_MISSING, this, 0).show();
-	            break;
-
-	        case ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED:
-	            Log.d(TAG, "SERVICE_VERSION_UPDATE_REQUIRED");
-	            GooglePlayServicesUtil.getErrorDialog(ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED, this, 0).show();
-	            break;
-
-	        case ConnectionResult.SERVICE_DISABLED:
-	            Log.d(TAG, "SERVICE_DISABLED");
-	            GooglePlayServicesUtil.getErrorDialog(ConnectionResult.SERVICE_DISABLED, this, 0).show();
-	            break;
-	    }
-	}*/
 }
