@@ -32,6 +32,8 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.SearchView;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -40,7 +42,7 @@ import android.util.Log;
 import org.json.*;
 
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements MapDialog.DialogFragmentListener {
 	String TAG;
 	View map;
 	private DrawerLayout MenuList;
@@ -57,8 +59,14 @@ public class MainActivity extends FragmentActivity {
 		
 		// Set map view
 		map = getLayoutInflater().inflate(R.layout.drawer, null);
-		setContentView(map);
+		setContentView(map);	
 		view = 0;
+		
+		if(gmap == null){
+			gmap = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
+		}
+		
+		initMap();
 		initActionBar();
 		initDrawer();
 		initDrawerList();
@@ -70,7 +78,7 @@ public class MainActivity extends FragmentActivity {
 	   
 	}
 	
-	@Override
+	/*@Override
 	public void onDestroy(){
 		//try{
 			super.onDestroy();
@@ -81,7 +89,7 @@ public class MainActivity extends FragmentActivity {
 		//}catch(NullPointerException e){
 		//	Log.d("onDestroy", "NullPointerException:" + e);
 		//}
-	}
+	}*/
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -98,6 +106,13 @@ public class MainActivity extends FragmentActivity {
 	    }
 
 	    return super.onOptionsItemSelected(item);
+	}
+	
+	private void initMap(){
+		gmap.setMapType(GoogleMap.MAP_TYPE_NORMAL);	// Normal Map
+		
+		CameraUpdate update = CameraUpdateFactory.newLatLngZoom(new LatLng(25.033611, 121.565000), 13); // Taipei 101
+		gmap.animateCamera(update);
 	}
 	
 	private void initActionBar(){
@@ -234,10 +249,19 @@ public class MainActivity extends FragmentActivity {
 		DialogFragment SpotDialog = MapDialog.newInstance(R.string.spot, R.array.spot_menu);
 		SpotDialog.show(getSupportFragmentManager(),"Spot");
 		
-		 /*gmap = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
-		    gmap.addMarker(new MarkerOptions()
-	        	.position(new LatLng(10, 10))
-	        	.title("Hello world"));*/
+	}
+	
+	@Override
+	public void onReturnValue(int title, int which){
+		
+		MarkerOptions marker1 = new MarkerOptions() ;
+		marker1.position(new LatLng(25.017340, 121.539752));
+		marker1.title("National Taiwan University");
+		marker1.draggable(true);
+		gmap.addMarker(marker1);
+		
+		CameraUpdate update = CameraUpdateFactory.newLatLngZoom(new LatLng(25.017340, 121.539752), 15); // Taipei 101
+		gmap.animateCamera(update);
 	}
 	
 	/*private void checkGooglePlayServices(){

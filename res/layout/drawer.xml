@@ -10,11 +10,12 @@
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:baselineAligned="false">
     	
   	    <fragment    
   			android:id="@+id/map"
-  			class="com.google.android.gms.maps.SupportMapFragment"
+  			class="com.google.android.gms.maps.MapFragment"
   			android:layout_weight="1"
   			android:layout_width="0dp"
   			android:layout_height="match_parent">
@@ -23,22 +24,23 @@
     		android:layout_width="fill_parent" 
     		android:layout_height="wrap_content" 
         	android:orientation="horizontal" 
-        	>
+        	style="?android:attr/buttonBarStyle">
         	
     		<Button
 			android:id="@+id/button1"
        		android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
-        	android:color="@color/forest_green"
+        	style="?android:attr/buttonBarButtonStyle"
+        	android:background="@color/forest_green"
         	android:onClick="showRestaurant"
-        	android:text="@string/restaurant"
-        	android:layout_alignParentBottom="true" />
+        	android:text="@string/restaurant" />
     		
     		<Button
 			android:id="@+id/button2"
        		android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
-        	android:color="@color/forest_green"
+        	style="?android:attr/buttonBarButtonStyle"
+        	android:background="@color/forest_green"
         	android:onClick="showSpot"
         	android:text="@string/spot" />
     		
@@ -46,7 +48,8 @@
 			android:id="@+id/button3"
        		android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
-        	android:color="@color/forest_green"
+        	style="?android:attr/buttonBarButtonStyle"
+        	android:background="@color/forest_green"
         	android:text="@string/my_favorite" />
     	</LinearLayout>
   	    </fragment>
