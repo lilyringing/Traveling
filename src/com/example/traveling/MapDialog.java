@@ -8,7 +8,7 @@ import android.support.v4.app.DialogFragment;
 
 public class MapDialog extends DialogFragment {
 	public interface DialogFragmentListener {
-        public void onReturnValue(int title, int choice);
+        public void MarkOnMap(int title, int choice);
     }
 	
 	public static MapDialog newInstance(int title, int list){
@@ -34,7 +34,7 @@ public class MapDialog extends DialogFragment {
         		   public void onClick(DialogInterface dialog, int which){
         			   // Pass the value back to MainActivity
         			   DialogFragmentListener activity = (DialogFragmentListener)getActivity();
-        			   activity.onReturnValue(t, which);
+        			   activity.MarkOnMap(t, which);
         		   }
         	   });
         // Create the AlertDialog object and return it

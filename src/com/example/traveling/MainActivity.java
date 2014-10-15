@@ -252,44 +252,36 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	}
 	
 	@Override
-	public void onReturnValue(int title, int which){
+	public void MarkOnMap(int title, int which){
+		//remove all markers, polylines
+		gmap.clear();
 		
-		MarkerOptions marker1 = new MarkerOptions() ;
-		marker1.position(new LatLng(25.017340, 121.539752));
-		marker1.title("National Taiwan University");
-		marker1.draggable(true);
-		gmap.addMarker(marker1);
+		//connect to DB
+		String result = DBconnector.executeQuery("SELECT * FROM user");
 		
-		CameraUpdate update = CameraUpdateFactory.newLatLngZoom(new LatLng(25.017340, 121.539752), 15); // Taipei 101
-		gmap.animateCamera(update);
+        try{
+        	JSONArray jsonArray = new JSONArray(result);
+        	for(int i = 0; i < jsonArray.length(); i++){
+        		JSONObject jsonData = jsonArray.getJSONObject(i);
+            	String name = jsonData.getString("name");
+            	int latitude = Integer.parseInt(jsonData.getString("latitude"));
+            	int longtitude = Integer.parseInt(jsonData.getString("longtitude"));
+            	
+            	// Mark on the map
+            	MarkerOptions mark = AddMarker(name, latitude, longtitude);
+            	gmap.addMarker(mark);
+        	}
+        }catch(JSONException e){
+        	Log.e("log_tag", e.toString());
+        }
+        	
 	}
 	
-	/*private void checkGooglePlayServices(){
-	    int result = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-	    switch (result) {
-	        case ConnectionResult.SUCCESS:
-	            Log.d(TAG, "SUCCESS");
-	            break;
-
-	        case ConnectionResult.SERVICE_INVALID:
-	            Log.d(TAG, "SERVICE_INVALID");
-	            GooglePlayServicesUtil.getErrorDialog(ConnectionResult.SERVICE_INVALID, this, 0).show();
-	            break;
-
-	        case ConnectionResult.SERVICE_MISSING:
-	            Log.d(TAG, "SERVICE_MISSING");
-	            GooglePlayServicesUtil.getErrorDialog(ConnectionResult.SERVICE_MISSING, this, 0).show();
-	            break;
-
-	        case ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED:
-	            Log.d(TAG, "SERVICE_VERSION_UPDATE_REQUIRED");
-	            GooglePlayServicesUtil.getErrorDialog(ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED, this, 0).show();
-	            break;
-
-	        case ConnectionResult.SERVICE_DISABLED:
-	            Log.d(TAG, "SERVICE_DISABLED");
-	            GooglePlayServicesUtil.getErrorDialog(ConnectionResult.SERVICE_DISABLED, this, 0).show();
-	            break;
-	    }
-	}*/
+	public MarkerOptions AddMarker(String name, int latitude, int longtitude){
+		MarkerOptions marker = new MarkerOptions();
+		marker.position(new LatLng(latitude, longtitude));
+		marker.title(name);
+		marker.draggable(true);
+		return marker;
+	}
 }
