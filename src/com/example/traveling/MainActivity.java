@@ -7,6 +7,7 @@ import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.Menu;
@@ -38,27 +39,49 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
+
 import android.util.Log;
 import org.json.*;
 
 
 public class MainActivity extends FragmentActivity implements MapDialog.DialogFragmentListener {
-	String TAG;
-	View map;
+	
 	private DrawerLayout MenuList;
 	private ListView MLDrawer;
 	private ActionBarDrawerToggle drawerToggle;
 	private CharSequence DrawerTitle;
     private CharSequence Title;
     private int view;
-	private GoogleMap gmap;
+	private View map;
+    private GoogleMap gmap;
+	private FBFragment fbfragment;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		// Set FB login
+		if(savedInstanceState == null){
+			fbfragment = new FBFragment();
+			getFragmentManager().beginTransaction()
+								.add(android.R.id.content, fbfragment)
+								.commit();
+		}else{	// Or set the fragment from restored state info
+			fbfragment = (FBFragment)getFragmentManager().
+						  findFragmentById(android.R.id.content);
+		}
+		
+		// Create another thread for network access
+		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites().detectNetwork().penaltyLog().build());  
+	    StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects().penaltyLog().penaltyDeath().build()); 
+	}
+	
+	public void initialize(View v){
 		// Set map view
-		map = getLayoutInflater().inflate(R.layout.drawer, null);
+		if(map == null){
+			map = getLayoutInflater().inflate(R.layout.drawer, null);
+		}
 		setContentView(map);	
 		view = 0;
 		
@@ -66,35 +89,16 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 			gmap = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
 		}
 		
+		// initialize map, action bar and navigation drawer
 		initMap();
 		initActionBar();
 		initDrawer();
 		initDrawerList();
-		
-		// Create another thread for network access
-		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites().detectNetwork().penaltyLog().build());  
-	    StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects().penaltyLog().penaltyDeath().build()); 
-	    
-	   
 	}
-	
-	/*@Override
-	public void onDestroy(){
-		//try{
-			super.onDestroy();
-			Fragment f = getFragmentManager().findFragmentById(R.id.map);
-		    if (f != null) 
-		        getFragmentManager().beginTransaction().remove(f).commit();
-			
-		//}catch(NullPointerException e){
-		//	Log.d("onDestroy", "NullPointerException:" + e);
-		//}
-	}*/
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
-		
 		
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -251,13 +255,22 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		
 	}
 	
+	public void showRoute(View view){
+		PolylineOptions line = new PolylineOptions();
+		line.add(new LatLng(25.016347, 121.533722), new LatLng(25.033611, 121.565000))
+			.width(5)
+			.color(Color.RED);
+		
+		gmap.addPolyline(line);
+	}
+	
 	@Override
 	public void MarkOnMap(int title, int which){
 		//remove all markers, polylines
 		gmap.clear();
 		
 		//connect to DB
-		String result = DBconnector.executeQuery("SELECT * FROM user");
+		/*String result = DBconnector.executeQuery("SELECT * FROM user");
 		
         try{
         	JSONArray jsonArray = new JSONArray(result);
@@ -273,11 +286,14 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         	}
         }catch(JSONException e){
         	Log.e("log_tag", e.toString());
-        }
-        	
+        }*/
+        MarkerOptions m = AddMarker("NTU", 25.016347, 121.533722);
+        gmap.addMarker(m);
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(new LatLng(25.016347, 121.533722), 13); // Taipei 101
+		gmap.animateCamera(update);
 	}
 	
-	public MarkerOptions AddMarker(String name, int latitude, int longtitude){
+	public MarkerOptions AddMarker(String name, double latitude, double longtitude){
 		MarkerOptions marker = new MarkerOptions();
 		marker.position(new LatLng(latitude, longtitude));
 		marker.title(name);

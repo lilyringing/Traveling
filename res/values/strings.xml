@@ -48,5 +48,7 @@
         <item >速食</item>
     </string-array>
     <string name="search_hint">hint</string>
+    <string name="facebook_app_id">1504108793171436</string>
+    <string name="skip">先不登入</string>
 
 </resources>

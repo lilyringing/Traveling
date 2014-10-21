@@ -50,6 +50,7 @@
         	android:layout_height="wrap_content"
         	style="?android:attr/buttonBarButtonStyle"
         	android:background="@color/forest_green"
+        	android:onClick="showRoute"
         	android:text="@string/my_favorite" />
     	</LinearLayout>
   	    </fragment>
