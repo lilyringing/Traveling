@@ -1763,11 +1763,11 @@ containing a value of this type.
         public static final int action_bar_subtitle=0x7f060040;
         public static final int action_bar_title=0x7f06003f;
         public static final int action_context_bar=0x7f06003a;
-        public static final int action_home=0x7f060081;
+        public static final int action_home=0x7f060082;
         public static final int action_menu_divider=0x7f060033;
         public static final int action_menu_presenter=0x7f060034;
         public static final int action_mode_close_button=0x7f060041;
-        public static final int action_search=0x7f060080;
+        public static final int action_search=0x7f060081;
         public static final int activity_chooser_view_content=0x7f060042;
         public static final int always=0x7f060029;
         public static final int authButton=0x7f06007c;
@@ -1847,7 +1847,7 @@ containing a value of this type.
         public static final int picker_subtitle=0x7f060069;
         public static final int production=0x7f060012;
         public static final int profile_list_child=0x7f060059;
-        public static final int profile_list_parent=0x7f06007f;
+        public static final int profile_list_parent=0x7f060080;
         public static final int progress_circular=0x7f060035;
         public static final int progress_horizontal=0x7f060036;
         public static final int radio=0x7f06004c;
@@ -1871,6 +1871,7 @@ containing a value of this type.
         public static final int showTitle=0x7f060024;
         public static final int skipButton=0x7f06007d;
         public static final int small=0x7f060000;
+        public static final int snippet=0x7f06007f;
         public static final int split_action_bar=0x7f06003b;
         public static final int standard=0x7f060003;
         public static final int strict_sandbox=0x7f060014;
@@ -1958,14 +1959,16 @@ containing a value of this type.
         public static final int fb_login=0x7f03002a;
         public static final int fragment_favorite=0x7f03002b;
         public static final int fragment_profile=0x7f03002c;
-        public static final int main=0x7f03002d;
-        public static final int parent=0x7f03002e;
-        public static final int support_simple_spinner_dropdown_item=0x7f03002f;
+        public static final int infowindow=0x7f03002d;
+        public static final int main=0x7f03002e;
+        public static final int parent=0x7f03002f;
+        public static final int support_simple_spinner_dropdown_item=0x7f030030;
     }
     public static final class menu {
         public static final int main=0x7f0e0000;
     }
     public static final class string {
+        public static final int More=0x7f090050;
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
          */
         public static final int abc_action_bar_home_description=0x7f090037;

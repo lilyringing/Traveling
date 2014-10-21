@@ -455,11 +455,11 @@ int id action_bar_root 0x7f060037
 int id action_bar_subtitle 0x7f060040
 int id action_bar_title 0x7f06003f
 int id action_context_bar 0x7f06003a
-int id action_home 0x7f060081
+int id action_home 0x7f060082
 int id action_menu_divider 0x7f060033
 int id action_menu_presenter 0x7f060034
 int id action_mode_close_button 0x7f060041
-int id action_search 0x7f060080
+int id action_search 0x7f060081
 int id activity_chooser_view_content 0x7f060042
 int id always 0x7f060029
 int id authButton 0x7f06007c
@@ -539,7 +539,7 @@ int id normal 0x7f060001
 int id picker_subtitle 0x7f060069
 int id production 0x7f060012
 int id profile_list_child 0x7f060059
-int id profile_list_parent 0x7f06007f
+int id profile_list_parent 0x7f060080
 int id progress_circular 0x7f060035
 int id progress_horizontal 0x7f060036
 int id radio 0x7f06004c
@@ -563,6 +563,7 @@ int id showHome 0x7f060022
 int id showTitle 0x7f060024
 int id skipButton 0x7f06007d
 int id small 0x7f060000
+int id snippet 0x7f06007f
 int id split_action_bar 0x7f06003b
 int id standard 0x7f060003
 int id strict_sandbox 0x7f060014
@@ -624,10 +625,12 @@ int layout drawer_list_item 0x7f030029
 int layout fb_login 0x7f03002a
 int layout fragment_favorite 0x7f03002b
 int layout fragment_profile 0x7f03002c
-int layout main 0x7f03002d
-int layout parent 0x7f03002e
-int layout support_simple_spinner_dropdown_item 0x7f03002f
+int layout infowindow 0x7f03002d
+int layout main 0x7f03002e
+int layout parent 0x7f03002f
+int layout support_simple_spinner_dropdown_item 0x7f030030
 int menu main 0x7f0e0000
+int string More 0x7f090050
 int string abc_action_bar_home_description 0x7f090037
 int string abc_action_bar_up_description 0x7f090038
 int string abc_action_menu_overflow_description 0x7f090039

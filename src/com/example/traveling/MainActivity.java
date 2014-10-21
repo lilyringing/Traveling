@@ -36,7 +36,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -45,7 +49,7 @@ import android.util.Log;
 import org.json.*;
 
 
-public class MainActivity extends FragmentActivity implements MapDialog.DialogFragmentListener {
+public class MainActivity extends FragmentActivity implements MapDialog.DialogFragmentListener{
 	
 	private DrawerLayout MenuList;
 	private ListView MLDrawer;
@@ -114,6 +118,29 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	
 	private void initMap(){
 		gmap.setMapType(GoogleMap.MAP_TYPE_NORMAL);	// Normal Map
+		gmap.setInfoWindowAdapter(new InfoWindowAdapter(){
+			@Override
+		    public View getInfoWindow(Marker arg0) {
+		        return null;
+		    }
+			
+			@Override
+		    public View getInfoContents(Marker m) {
+				View mapIW = getLayoutInflater().inflate(R.layout.infowindow, null);
+				TextView tvTitle = ((TextView) mapIW.findViewById(R.id.title));
+	            tvTitle.setText(m.getTitle());
+	            TextView tvSnippet = ((TextView) mapIW.findViewById(R.id.snippet));
+	            tvSnippet.setText(m.getSnippet());
+		        return mapIW;
+			}
+		});
+		gmap.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
+			@Override
+		    public void onInfoWindowClick(Marker m) {
+				DialogFragment dialog = new InfoWindowDialog();
+				dialog.show(getSupportFragmentManager(),"test");
+			}
+		});
 		
 		CameraUpdate update = CameraUpdateFactory.newLatLngZoom(new LatLng(25.033611, 121.565000), 13); // Taipei 101
 		gmap.animateCamera(update);
@@ -287,17 +314,17 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         }catch(JSONException e){
         	Log.e("log_tag", e.toString());
         }*/
-        MarkerOptions m = AddMarker("NTU", 25.016347, 121.533722);
+        MarkerOptions m = AddMarker("NTU", 25.016347, 121.533722, "2222-3333");
         gmap.addMarker(m);
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(new LatLng(25.016347, 121.533722), 13); // Taipei 101
 		gmap.animateCamera(update);
 	}
 	
-	public MarkerOptions AddMarker(String name, double latitude, double longtitude){
+	public MarkerOptions AddMarker(String name, double latitude, double longtitude, String phone){
 		MarkerOptions marker = new MarkerOptions();
 		marker.position(new LatLng(latitude, longtitude));
 		marker.title(name);
-		marker.draggable(true);
+		marker.snippet(phone);
 		return marker;
 	}
 }
