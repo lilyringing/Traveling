@@ -1,5 +1,7 @@
 package com.example.traveling;
 
+import java.util.HashMap;
+
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
@@ -60,6 +62,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	private View map;
     private GoogleMap gmap;
 	private FBFragment fbfragment;
+	HashMap<String, HashMap> extraMarkerInfo;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -137,7 +140,9 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		gmap.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
 			@Override
 		    public void onInfoWindowClick(Marker m) {
-				DialogFragment dialog = new InfoWindowDialog();
+				HashMap<String, String> marker_data = extraMarkerInfo.get(m.getId());
+				
+				DialogFragment dialog = InfoWindowDialog.newInstance(marker_data);
 				dialog.show(getSupportFragmentManager(),"test");
 			}
 		});
@@ -295,7 +300,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	public void MarkOnMap(int title, int which){
 		//remove all markers, polylines
 		gmap.clear();
-		
+		extraMarkerInfo = new HashMap<String, HashMap>();
 		//connect to DB
 		/*String result = DBconnector.executeQuery("SELECT * FROM user");
 		
@@ -303,26 +308,50 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         	JSONArray jsonArray = new JSONArray(result);
         	for(int i = 0; i < jsonArray.length(); i++){
         		JSONObject jsonData = jsonArray.getJSONObject(i);
-            	String name = jsonData.getString("name");
-            	int latitude = Integer.parseInt(jsonData.getString("latitude"));
-            	int longtitude = Integer.parseInt(jsonData.getString("longtitude"));
             	
+            	HashMap<String, String> data = new HashMap<String, String>();
+            	String name = jsonData.getString("Name");
+            	data.put("name", name);
+            	String phone = jsonData.getString("Phone");
+            	data.put("phone", phone);
+            	data.put("address", jsonData.getString("Address"));
+            	String lat = jsonData.getString("Latitude");
+            	String lnt = jsonData.getString("Longitude");
+            	data.put("score", jsonData.getString("Score"));
+            	data.put("content", jsonData.getString("Content"));
+            	//data.put("tagr", jsonData.getString("Tag_R"));
+            	//data.put("tags", jsonData.getString("Tag_S"));
+            	data.put("open", jsonData.getString("Open"));
+            	data.put("ticket", jsonData.getString("Ticket"));
+            	data.put("website", jsonData.getString("Website"));
+            	            	
             	// Mark on the map
-            	MarkerOptions mark = AddMarker(name, latitude, longtitude);
+            	MarkerOptions mark = CreateMarkerOpt(name, lat, lnt, phone);
             	gmap.addMarker(mark);
+            	extraMarkerInfo.put(mark.getId(),data);
         	}
         }catch(JSONException e){
         	Log.e("log_tag", e.toString());
         }*/
-        MarkerOptions m = AddMarker("NTU", 25.016347, 121.533722, "2222-3333");
-        gmap.addMarker(m);
+		
+		// Example for testing
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put("name", "NTU");
+    	data.put("phone", "2222-3333");
+    	data.put("address", "羅斯福路");
+    	data.put("score", "5");
+    	data.put("content", "國立台灣大學");
+    	data.put("website", "www.ntu.edu.tw");
+    	MarkerOptions m = CreateMarkerOpt("NTU", "25.016347", "121.533722", "2222-3333");
+        Marker marker = gmap.addMarker(m);
+        extraMarkerInfo.put(marker.getId(),data);
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(new LatLng(25.016347, 121.533722), 13); // Taipei 101
 		gmap.animateCamera(update);
 	}
 	
-	public MarkerOptions AddMarker(String name, double latitude, double longtitude, String phone){
+	public MarkerOptions CreateMarkerOpt(String name, String latitude, String longtitude, String phone){
 		MarkerOptions marker = new MarkerOptions();
-		marker.position(new LatLng(latitude, longtitude));
+		marker.position(new LatLng(Double.parseDouble(latitude), Double.parseDouble(longtitude)));
 		marker.title(name);
 		marker.snippet(phone);
 		return marker;
