@@ -22,7 +22,7 @@ public class DBconnector {
         
         try {
             HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost("http://192.168.1.7/android_dbconnect.php");
+            HttpPost httpPost = new HttpPost("http://192.168.0.20/android_dbconnect.php");
             ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("query_string", query_string));
             httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));

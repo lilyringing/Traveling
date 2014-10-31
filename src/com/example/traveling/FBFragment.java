@@ -2,14 +2,19 @@ package com.example.traveling;
 
 import java.util.Arrays;
 
+import com.example.traveling.MapDialog.DialogFragmentListener;
+import com.facebook.Request;
+import com.facebook.RequestAsyncTask;
+import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 
 import android.os.Bundle;
-import android.app.Fragment;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +24,18 @@ import android.widget.Toast;
 public class FBFragment extends Fragment{
 	private static final String TAG = "FBLogin";
 	private UiLifecycleHelper uiHelper;
+	private String name;
+	private String uid;
 	private Session.StatusCallback callback = new Session.StatusCallback() {
 	    @Override
 	    public void call(Session session, SessionState state, Exception exception) {
 	        onSessionStateChange(session, state, exception);
 	    }
 	};
+	
+	public interface SetUserData {
+        public void SetUser(String id, String name);
+    }
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -35,14 +46,13 @@ public class FBFragment extends Fragment{
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+		//View v = inflater.inflate(R.layout.main, container, false);
 		View v = inflater.inflate(R.layout.fb_login, container, false);
 		
-		
 		LoginButton authButton = (LoginButton) v.findViewById(R.id.authButton);
+		authButton.setFragment(this);
 		authButton.setReadPermissions(Arrays.asList("public_profile"));
 		//To allow fragment receiving the onActivityResult()
-		/*authButton.setFragment(this);*/
-		
 		return v;
 	}
 	
@@ -86,12 +96,59 @@ public class FBFragment extends Fragment{
 	    uiHelper.onSaveInstanceState(outState);
 	}
 	
+	public String GetUserName(){
+		return name;
+	}
+	
 	private void onSessionStateChange(Session session, SessionState state, Exception exception) {
 	    if (state.isOpened()) {
 	        Log.i(TAG, "Logged in...");
-	        Toast.makeText(getActivity(), "Logged in",Toast.LENGTH_LONG ).show();
+	        //Toast.makeText(getActivity(), "Logged in",Toast.LENGTH_LONG ).show();
+	        
+	        Request.newMeRequest(session, new Request.GraphUserCallback() {
+
+                @Override
+                public void onCompleted(GraphUser user, Response response) {
+                    if (user != null) {
+                        // Display the parsed user info
+                        uid = GetUserId(user);
+                    	name = GetUserName(user);
+                        //Toast.makeText(getActivity(), uid, Toast.LENGTH_LONG ).show();
+                        
+                        SetUserData activity = (SetUserData)getActivity();
+         			   	activity.SetUser(uid, name);
+                        
+                    }
+                }
+            }).executeAsync();
+	                
+	       /* Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
+
+                @Override
+                public void onCompleted(GraphUser user, Response response) {
+                    if (user != null) {
+                        // Display the parsed user info
+                        name = SetUserName(user);
+                    }
+                }
+            });*/
 	    } else if (state.isClosed()) {
-	        Log.i(TAG, "Logged out...");
+	        Log.i(TAG, "Logged out...");			
+	        Toast.makeText(getActivity(), "Logged out",Toast.LENGTH_LONG ).show();
 	    }
 	}
+	
+	private String GetUserId(GraphUser user){
+		return user.getId();
+		//user.getBirthday();
+	}
+	
+	private String GetUserName(GraphUser user){
+		return user.getName();
+		//user.getBirthday();
+	}
+	 
+	 public String GetName(){
+		 return name;
+	 }
 }

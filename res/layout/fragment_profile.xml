@@ -12,65 +12,75 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
         
-  	   <TableLayout
-  	       android:layout_width="match_parent"
-           android:layout_height="match_parent"
-           android:layout_gravity="center">
-           
-  	       <TableRow 
-  	           android:layout_width="match_parent"
-  	           android:layout_height="48dp"
-  	           android:background="@drawable/ic_user">
-  	           <Button
-       	       	   android:layout_width="wrap_content"
-       	       	   android:layout_height="wrap_content"
-       	       	   android:text="SETTING"/>
-  	       </TableRow>
-  	       
-  	       <TableRow 
-  	           android:layout_width="match_parent"
-  	           android:layout_height="48dp">
-  	           <Button
-  	               android:layout_width="wrap_content"
-       	       	   android:layout_height="wrap_content"
-       	           android:text="我的日誌"
-       	           android:onClick="showMyDiary"/>
-  	       </TableRow>
-  	       
-  	       <TableLayout
-  	           android:id="@+id/my_diary"
-  	           android:layout_width="match_parent"
-  	           android:layout_height="wrap_content">
-  	           
-  	       </TableLayout>
-  	       
-  	       <TableRow 
-  	           android:layout_width="match_parent"
-  	           android:layout_height="48dp">
-  	           <Button
-  	               android:layout_width="wrap_content"
-       	       	   android:layout_height="wrap_content"
-       	           android:text="我的收藏"/>
-  	       </TableRow>
-  	       
-  	       <TableRow 
-  	           android:layout_width="match_parent"
-  	           android:layout_height="48dp">
-  	           <Button
-  	               android:layout_width="wrap_content"
-       	       	   android:layout_height="wrap_content"
-       	           android:text="我的訂閱"/>
-  	       </TableRow>
-  	       
-  	       <TableRow 
-  	           android:layout_width="match_parent"
-  	           android:layout_height="48dp">
-  	           <Button
-  	               android:layout_width="wrap_content"
-       	       	   android:layout_height="wrap_content"
-       	           android:text="我的路線"/>
-  	       </TableRow>
-  	   </TableLayout>        	
+  	   <RelativeLayout 
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:layout_alignParentLeft="true"
+    		android:layout_alignParentTop="true"
+    		android:layout_marginLeft="10dp"
+    		android:layout_marginTop="10dp" >
+
+  	    <!-- Photo of FB -->
+    	<ImageView
+        	android:id="@+id/UserPhoto"
+        	android:layout_width="100dp"
+        	android:layout_height="100dp"
+        	android:layout_marginTop="10dp"
+        	android:layout_marginLeft="10dp"
+        	android:layout_alignParentLeft="true"
+        	android:layout_alignParentTop="true"
+        	android:src="@drawable/patti" />		
+
+    	<!-- Name of FB -->
+    	<TextView
+        	android:id="@+id/UserName"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:layout_marginLeft="130dp"
+        	android:layout_alignTop="@+id/UserPhoto"
+       	 	android:text="Name" />					
+        
+    	<TextView
+        	android:id="@+id/Gender"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:layout_marginLeft="130dp"
+        	android:layout_below="@+id/UserName"
+        	android:text="Gender" />					
+        
+    	<TextView
+        	android:id="@+id/Birthday"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:layout_marginLeft="130dp"
+        	android:layout_below="@+id/Gender"
+        	android:text="BirthDay" />	
+        
+    	<TextView
+        	android:id="@+id/Age"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:layout_marginLeft="130dp"
+        	android:layout_below="@+id/Birthday"
+        	android:text="Age" />	    
+  
+   	 	<TextView
+        	android:id="@+id/textView5"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:layout_marginLeft="130dp"
+        	android:layout_below="@+id/Age"
+        	android:text=" " />
+
+    	<ExpandableListView
+        	android:id="@+id/elview"
+        	android:layout_width="match_parent" 
+        	android:layout_height="fill_parent"
+        	android:drawSelectorOnTop="false"
+        	android:groupIndicator="@null"
+  			android:layout_below="@id/textView5" />
+    
+		</RelativeLayout>       	
     </LinearLayout>	
     
 	<!-- The navigation drawer -->
