@@ -12,10 +12,17 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
         
-  	   <TextView 
-  	       android:layout_width="match_parent"
-           android:layout_height="match_parent"
-           android:text="@string/action_search"/>
+  	   <!--  <ImageView
+        	android:id="@+id/My_Favorite"
+        	android:layout_width="match_parent"
+        	android:layout_height="match_parent"
+        	android:layout_alignParentTop="true"
+        	android:src="@drawable/my_favorite" /> -->
+  	   
+  	   <android.support.v4.view.ViewPager
+    		android:id="@+id/favoritepager"
+    		android:layout_width="match_parent" 
+    		android:layout_height="match_parent" />
         	
     </LinearLayout>	
     

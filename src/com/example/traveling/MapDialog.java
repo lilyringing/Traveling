@@ -5,8 +5,12 @@ import android.app.Dialog;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.v4.app.DialogFragment;
+import android.widget.ListView;
+import android.widget.Toast;
 
 public class MapDialog extends DialogFragment {
+	static int mSelectedIndex;
+	
 	public interface DialogFragmentListener {
         public void MarkOnMap(int title, int choice);
     }
@@ -28,13 +32,17 @@ public class MapDialog extends DialogFragment {
         
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(title)
-        	   .setItems(list, new DialogInterface.OnClickListener(){
+        builder.setTitle(title)     
+        	   .setSingleChoiceItems(list, 0, new DialogInterface.OnClickListener(){
         		// which is the item is the list, start from 0
         		   public void onClick(DialogInterface dialog, int which){
-        			   // Pass the value back to MainActivity
+        			   mSelectedIndex = which;
+        		   }
+        	   })
+        	   .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        		   public void onClick(DialogInterface dialog, int which){
         			   DialogFragmentListener activity = (DialogFragmentListener)getActivity();
-        			   activity.MarkOnMap(t, which);
+        			   activity.MarkOnMap(t, mSelectedIndex);
         		   }
         	   });
         // Create the AlertDialog object and return it

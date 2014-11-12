@@ -41,6 +41,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.SearchView;
@@ -77,6 +79,8 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	private View map;							// Store the view of map page (because it can't be inflate twice)
     private GoogleMap gmap;						// A object which is used to manipulate google map
 	private FBFragment fbfragment;
+	private ViewPager FavoritePager;
+	private PageAdapter pageadapter;
 	HashMap<String, HashMap> extraMarkerInfo;	// A data structure which is used to store detail information of markers.
 	String userid;
 	String username;
@@ -88,10 +92,14 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		// Set FB login
 		if(savedInstanceState == null){			
 			fbfragment = new FBFragment();
-			getSupportFragmentManager().beginTransaction()
-			.add(android.R.id.content, fbfragment)
-			.commit();
-			
+			if(userid == null){
+				getSupportFragmentManager().beginTransaction()
+				.add(android.R.id.content, fbfragment)
+				.commit();
+			}else{
+				initialize();
+			}
+				
 		}else{	// Or set the fragment from restored state info
 			
 			fbfragment = (FBFragment)getSupportFragmentManager().
@@ -241,17 +249,21 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         TextView age = (TextView)findViewById(R.id.Age);
         
 		try {
-            String result = DBconnector.executeQuery("SELECT user_name, gender, birthday, age, photo FROM user WHERE fb_id=" + userid);
+            String result = DBconnector.executeQuery("SELECT * FROM user WHERE fb_id=" + userid);
             
             /* When SQL results contain many data using JSONArray
                If only one data use JSONObject
-               JSONObject jsonData = new JSONObject(result);*/
-            JSONObject jsonData = new JSONObject(result);
+               JSONObject jsonData = new JSONObject(result);*/ 
+            JSONArray jsonArray = new JSONArray(result);
             
-            name.setText(jsonData.getString("user_name"));
-            gender.setText(jsonData.getString("gender"));
-            birthday.setText(jsonData.getString("birthday"));
-            age.setText(jsonData.getString("age"));
+        	for(int i = 0; i < jsonArray.length(); i++){
+        		JSONObject jsonData = jsonArray.getJSONObject(i);
+        		
+        		name.setText(jsonData.getString("user_name"));
+        		gender.setText(jsonData.getString("gender"));
+        		birthday.setText(jsonData.getString("birthday"));
+        		age.setText(jsonData.getString("age"));
+        	}
         } catch(Exception e) {
              Log.e("log_tag", e.toString());
         }
@@ -272,66 +284,98 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         groups.add(group3);
         
         /*第二層列表_收藏地點*/
+        List<Map<String, String>> child1 = new ArrayList<Map<String, String>>();
         try {
-            String result = DBconnector.executeQuery("SELECT site_id FROM user WHERE fb_id=" + userid);
+            String result = DBconnector.executeQuery("SELECT * FROM collect_s WHERE fb_id=" + userid);
+            Log.e("log_tag", result);
+            /* When SQL results contain many data using JSONArray
+               If only one data use JSONObject
+               JSONObject jsonData = new JSONObject(result);*/
+            JSONArray jsonArray = new JSONArray(result);
+            int array_size = jsonArray.length();
+            int show_size = Math.min(array_size, 3);
+            
+        	for(int i = 0; i < show_size; i++){
+        		JSONObject jsonData = jsonArray.getJSONObject(i);
+            	String site_name = jsonData.getString("site_id");
+            	
+            	Map<String, String> child1Data = new HashMap<String, String>();
+                child1Data.put("child", site_name);
+                child1.add(child1Data);
+        	}
+        	
+            Map<String, String> child1More = new HashMap<String, String>();
+            child1More.put("child", "more");
+            child1.add(child1More);
+        } catch(Exception e) {
+             Log.e("log_tag", e.toString());
+             Map<String, String> child1Data = new HashMap<String, String>();
+             child1Data.put("child", "您沒有收藏任何地點!");
+             child1.add(child1Data);
+        }
+        
+        /*第二層列表_收藏路線*/
+        List<Map<String, String>> child2 = new ArrayList<Map<String, String>>();
+        try {
+            String result = DBconnector.executeQuery("SELECT travel_id FROM collect_t WHERE fb_id=" + userid);
             
             /* When SQL results contain many data using JSONArray
                If only one data use JSONObject
                JSONObject jsonData = new JSONObject(result);*/
-           
+            JSONArray jsonArray = new JSONArray(result);
+            int array_size = jsonArray.length();
+            int show_size = Math.min(array_size, 3);
+            
+        	for(int i = 0; i < show_size; i++){
+        		JSONObject jsonData = jsonArray.getJSONObject(i);
+            	String route_name = jsonData.getString("travel_id");
+            	
+            	Map<String, String> child2Data = new HashMap<String, String>();
+                child2Data.put("child", route_name);
+                child2.add(child2Data);
+        	}
+        	
+        	Map<String, String> child2More = new HashMap<String, String>();
+            child2More.put("child", "more");
+            child2.add(child2More);
         } catch(Exception e) {
              Log.e("log_tag", e.toString());
-        }
-        
-        /*傳FB_id，存取COLLECT_S X SITE 裡的三個最新收藏地點Name*/
-        /*請改「地點A」、「地點B」、「地點C」*/
-        List<Map<String, String>> child1 = new ArrayList<Map<String, String>>();
-        Map<String, String> child1Data1 = new HashMap<String, String>();
-        child1Data1.put("child", "地點A");
-        Map<String, String> child1Data2 = new HashMap<String, String>();
-        child1Data2.put("child", "地點B");
-        Map<String, String> child1Data3 = new HashMap<String, String>();
-        child1Data3.put("child", "地點C");
-        Map<String, String> child1Data4 = new HashMap<String, String>();
-        child1Data4.put("child", "more");
-        child1.add(child1Data1);
-        child1.add(child1Data2);
-        child1.add(child1Data3);
-        child1.add(child1Data4);
-        
-        /*第二層列表_收藏路線*/
-        /*傳FB_id，存取COLLECT_T X TRAVEL 裡的三個最新收藏路線Name(Name要新增進DB_TRAVEL表)*/
-        /*請改「路線A」、「路線B」、「路線C」*/
-        List<Map<String, String>> child2 = new ArrayList<Map<String, String>>();
-        Map<String, String> child2Data1 = new HashMap<String, String>();
-        child2Data1.put("child", "路線1");
-        Map<String, String> child2Data2 = new HashMap<String, String>();
-        child2Data2.put("child", "路線2");
-        Map<String, String> child2Data3 = new HashMap<String, String>();
-        child2Data3.put("child", "路線3");
-        Map<String, String> child2Data4 = new HashMap<String, String>();
-        child2Data4.put("child", "more");
-        child2.add(child2Data1);
-        child2.add(child2Data2);
-        child2.add(child2Data3);
-        child2.add(child2Data4);
+             Map<String, String> child2Data = new HashMap<String, String>();
+             child2Data.put("child", "您沒有收藏任何路線!");
+             child2.add(child2Data);
+        }       
         
         /*第二層列表_我的路線*/
-        /*傳FB_id，存取OWNERSHIP X TRAVEL 裡的三個最新建立路線(Name要新增進DB_TRAVEL表)*/
-        /*請改「我的路線A」、「我的路線B」、「我的路線C」*/
         List<Map<String, String>> child3 = new ArrayList<Map<String, String>>();
-        Map<String, String> child3Data1 = new HashMap<String, String>();
-        child3Data1.put("child", "我的路線1");
-        Map<String, String> child3Data2 = new HashMap<String, String>();
-        child3Data2.put("child", "我的路線2");
-        Map<String, String> child3Data3 = new HashMap<String, String>();
-        child3Data3.put("child", "我的路線3");
-        Map<String, String> child3Data4 = new HashMap<String, String>();
-        child3Data4.put("child", "more");
-        child3.add(child3Data1);
-        child3.add(child3Data2);
-        child3.add(child3Data3);
-        child3.add(child3Data4);
+        try {
+            String result = DBconnector.executeQuery("SELECT travel_id FROM ownership WHERE owner=" + userid);
+            
+            /* When SQL results contain many data using JSONArray
+               If only one data use JSONObject
+               JSONObject jsonData = new JSONObject(result);*/
+            JSONArray jsonArray = new JSONArray(result);
+            int array_size = jsonArray.length();
+            int show_size = Math.min(array_size, 3);
+           
+        	for(int i = 0; i < show_size; i++){
+        		JSONObject jsonData = jsonArray.getJSONObject(i);
+            	String route_name = jsonData.getString("travel_id");
+            	
+            	Map<String, String> child3Data = new HashMap<String, String>();
+                child3Data.put("child", route_name);
+                child3.add(child3Data);
+        
+        	}
+        	
+        	Map<String, String> child3More = new HashMap<String, String>();
+            child3More.put("child", "more");
+            child3.add(child3More);
+        } catch(Exception e) {
+             Log.e("log_tag", e.toString());
+             Map<String, String> child3More = new HashMap<String, String>();
+             child3More.put("child", "您還沒有建立任何路線");
+             child3.add(child3More);
+        }
         
         //用一個list物件保存所有的二級清單資料
         List<List<Map<String, String>>> childs = new ArrayList<List<Map<String, String>>>();
@@ -355,40 +399,56 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         		String t = viewAdapter.getChild(groupPosition,childPosition).toString();
         		String title = t.substring(7,t.length()-1);
         		
-        		if(childPosition==3){
-        			/*連結more頁面*/
-        			Toast.makeText(getBaseContext(), "More", Toast.LENGTH_SHORT).show();
-        			
-        			Intent intenta = new Intent();
-			        intenta.setClass(MainActivity.this, Site.class);
-			        startActivity(intenta);
-        			
+        		//Toast.makeText(getBaseContext(), groupPosition,Toast.LENGTH_LONG ).show();
+        		
+        		if(title.equals("more")){
+        			switch(groupPosition){
+        				case 0:
+        					selectItem(2);
+        					break;
+        				case 1:
+        					selectItem(2);
+        					break;
+        				case 2:
+        					break;
+        				default:
+        					break;
+        			}
         		}
-        		else{
-        		 // TODO Auto-generated method stub 
-        		 new AlertDialog.Builder(MainActivity.this) 
-        		 
-        		 /*彈出視窗的標題*/ 
-        		 /*放入景點or路線的名稱(改Title)*/
-        		 .setTitle(title) 
-        		 
-        		 /*設定彈出視窗的訊息*/ 
-        		 /*發入景點或路線的相關訊息(改Content)*/
-        		 .setMessage("Content") 
-        		 .setPositiveButton("Close", new DialogInterface.OnClickListener() {public void onClick (DialogInterface dialoginterface, int i) { } } )
-        		 /*.setNegativeButton("NO",new DialogInterface.OnClickListener(){ //設定跳出視窗的返回事件public void onClick(DialogInterface dialoginterface, int i) {} })*/
-        		 .show();
-        		}
+        		
 				return false; 
             }  
         }); 
+	}
+	
+	public void initFavorite(int position){
+		setContentView(R.layout.fragment_favorite);
+		pageadapter = new PageAdapter(this, userid);
+        FavoritePager = (ViewPager) findViewById(R.id.favoritepager);
+        FavoritePager.setAdapter(pageadapter);
+        
+        FavoritePager.setCurrentItem(position);
+        FavoritePager.setOnPageChangeListener(new OnPageChangeListener() {
+
+            public void onPageScrollStateChanged(int arg0) {
+            }
+
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+            }
+
+            public void onPageSelected(int currentPage) {
+                //currentPage is the position that is currently displayed.
+            	         	
+            }
+
+        });
 	}
 	
 	public void initHelp(){
 		setContentView(R.layout.fragment_help);
 		
 		/*建listview*/
-        ExpandableListView elv = (ExpandableListView)findViewById(R.id.ELview);
+        /*ExpandableListView elv = (ExpandableListView)findViewById(R.id.ELview);
 		List<Map<String, String>> groups = new ArrayList<Map<String, String>>();
         Map<String, String> group1 = new HashMap<String, String>();
         group1.put("group", "登入問題");
@@ -406,7 +466,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         child1.add(child1Data2);
         
         List<List<Map<String, String>>> childs = new ArrayList<List<Map<String, String>>>();
-        childs.add(child1);
+        childs.add(child1);*/
 	}
 	
 	/* Change main content view when click items in the drawer */ 
@@ -424,7 +484,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 					view = 1;
 					break;
 				case 2:	// Favorite
-					setContentView(R.layout.fragment_favorite);
+					initFavorite(0);
 					view = 2;
 					break;
 				case 5: // Help
@@ -509,6 +569,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		//remove all markers, polylines
 		gmap.clear();
 		extraMarkerInfo = new HashMap<String, HashMap>();
+		
 		
         try{
         	//connect to DB

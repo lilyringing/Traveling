@@ -26,6 +26,7 @@ public class FBFragment extends Fragment{
 	private UiLifecycleHelper uiHelper;
 	private String name;
 	private String uid;
+	private LoginButton authButton;
 	private Session.StatusCallback callback = new Session.StatusCallback() {
 	    @Override
 	    public void call(Session session, SessionState state, Exception exception) {
@@ -49,9 +50,10 @@ public class FBFragment extends Fragment{
 		//View v = inflater.inflate(R.layout.main, container, false);
 		View v = inflater.inflate(R.layout.fb_login, container, false);
 		
-		LoginButton authButton = (LoginButton) v.findViewById(R.id.authButton);
+		authButton = (LoginButton) v.findViewById(R.id.authButton);
 		authButton.setFragment(this);
 		authButton.setReadPermissions(Arrays.asList("public_profile"));
+		authButton.setVisibility(View.INVISIBLE);
 		//To allow fragment receiving the onActivityResult()
 		return v;
 	}
@@ -122,19 +124,10 @@ public class FBFragment extends Fragment{
                 }
             }).executeAsync();
 	                
-	       /* Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
-
-                @Override
-                public void onCompleted(GraphUser user, Response response) {
-                    if (user != null) {
-                        // Display the parsed user info
-                        name = SetUserName(user);
-                    }
-                }
-            });*/
 	    } else if (state.isClosed()) {
+	    	authButton.setVisibility(View.VISIBLE);
 	        Log.i(TAG, "Logged out...");			
-	        Toast.makeText(getActivity(), "Logged out",Toast.LENGTH_LONG ).show();
+	        //Toast.makeText(getActivity(), "Logged out",Toast.LENGTH_LONG ).show();
 	    }
 	}
 	
