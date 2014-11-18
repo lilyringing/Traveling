@@ -9,6 +9,8 @@ import android.support.v4.app.DialogFragment;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.MotionEvent;
+import android.view.View.OnTouchListener;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -44,6 +46,13 @@ public class InfoWindowDialog extends DialogFragment{
         tvAddress.setText(getArguments().getString("address"));
         RatingBar score = ((RatingBar) v.findViewById(R.id.score));
         score.setRating(Integer.parseInt(getArguments().getString("score")));
+        score.setOnTouchListener(new OnTouchListener() { 
+        	public boolean onTouch(View v, MotionEvent event) { 
+        		return true; 
+        		}
+        		});
+
+        
         TextView tvContent = ((TextView) v.findViewById(R.id.content));
         tvContent.setText(getArguments().getString("content"));
         TextView tvOpen = ((TextView) v.findViewById(R.id.open));

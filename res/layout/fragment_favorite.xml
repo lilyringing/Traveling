@@ -6,25 +6,26 @@
     android:layout_height="match_parent">
     
 	<!-- The main content view -->
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
         
-  	   <!--  <ImageView
+  	   <ImageView
         	android:id="@+id/My_Favorite"
-        	android:layout_width="match_parent"
-        	android:layout_height="match_parent"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
         	android:layout_alignParentTop="true"
-        	android:src="@drawable/my_favorite" /> -->
+        	android:src="@drawable/my_favorite" />
   	   
   	   <android.support.v4.view.ViewPager
     		android:id="@+id/favoritepager"
     		android:layout_width="match_parent" 
-    		android:layout_height="match_parent" />
+    		android:layout_height="match_parent"
+    		android:layout_below="@+id/My_Favorite"/>
         	
-    </LinearLayout>	
+    </RelativeLayout>	
     
 	<!-- The navigation drawer -->
     <ListView android:id="@+id/left_drawer"

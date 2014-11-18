@@ -21,12 +21,15 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.ExpandableListAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -151,6 +154,20 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	    return super.onOptionsItemSelected(item);
 	}
 	
+	@Override
+	public boolean onSearchRequested(){
+	 
+		String text=etdata.getText().toString();
+		Bundle bundle=new Bundle();
+		bundle.putString("data", text);
+	 
+		//打開浮動搜索框（第一個參數預設添加到搜索框的值）
+		//bundle為傳遞的資料
+		startSearch("mm", false, bundle, false);
+		//這個地方一定要返回真 如果只是super.onSearchRequested方法不但 onSearchRequested（搜索框預設值）無法添加到搜索框中,bundle也無法傳遞出去
+		return true;
+	}
+	
 	private void initMap(){
 		gmap.setMapType(GoogleMap.MAP_TYPE_NORMAL);	// Normal Map
 		gmap.setInfoWindowAdapter(new InfoWindowAdapter(){
@@ -265,7 +282,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         		age.setText(jsonData.getString("age"));
         	}
         } catch(Exception e) {
-             Log.e("log_tag", e.toString());
+             Log.e("log_tag_user", e.toString());
         }
         
         /*建listview*/
@@ -286,8 +303,8 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         /*第二層列表_收藏地點*/
         List<Map<String, String>> child1 = new ArrayList<Map<String, String>>();
         try {
-            String result = DBconnector.executeQuery("SELECT * FROM collect_s WHERE fb_id=" + userid);
-            Log.e("log_tag", result);
+            //String result = DBconnector.executeQuery("SELECT * FROM collect_s WHERE fb_id=" + userid);
+            String result = DBconnector.executeQuery("SELECT * FROM `collect_s`, `site` WHERE collect_s.fb_id=" + userid + " and site.site_id=collect_s.site_id");
             /* When SQL results contain many data using JSONArray
                If only one data use JSONObject
                JSONObject jsonData = new JSONObject(result);*/
@@ -297,8 +314,8 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
             
         	for(int i = 0; i < show_size; i++){
         		JSONObject jsonData = jsonArray.getJSONObject(i);
-            	String site_name = jsonData.getString("site_id");
-            	
+            	String site_name = jsonData.getString("site_name");
+            		
             	Map<String, String> child1Data = new HashMap<String, String>();
                 child1Data.put("child", site_name);
                 child1.add(child1Data);
@@ -308,7 +325,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
             child1More.put("child", "more");
             child1.add(child1More);
         } catch(Exception e) {
-             Log.e("log_tag", e.toString());
+             Log.e("log_tag_site", e.toString());
              Map<String, String> child1Data = new HashMap<String, String>();
              child1Data.put("child", "您沒有收藏任何地點!");
              child1.add(child1Data);
@@ -423,7 +440,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	
 	public void initFavorite(int position){
 		setContentView(R.layout.fragment_favorite);
-		pageadapter = new PageAdapter(this, userid);
+		pageadapter = new PageAdapter(this, userid, getSupportFragmentManager());
         FavoritePager = (ViewPager) findViewById(R.id.favoritepager);
         FavoritePager.setAdapter(pageadapter);
         
@@ -442,6 +459,93 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
             }
 
         });
+	}
+	
+	public void initRoute(){
+		setContentView(R.layout.fragment_route);
+		
+		LinearLayout ll = (LinearLayout)findViewById(R.id.viewObj);
+		// 將 Button 1 加入到 LinearLayout 中
+        Button b1 = new Button(this);
+        b1.setText("Site1");
+        ll.addView( b1 );
+        b1.setId(1);
+        
+        // 將 Button 2 加入到 LinearLayout 中
+        Button b2 = new Button(this);
+        b2.setText("Site2");
+        ll.addView( b2 );
+        b2.setId(2);
+        
+        
+		final Button btn = (Button) findViewById(1);
+		final Button btn2 =(Button) findViewById(2);
+
+		btn.setOnTouchListener(new OnTouchListener() {
+			int[] temp = new int[] { 0, 0 };
+
+			public boolean onTouch(View v, MotionEvent event) {
+
+				int eventaction = event.getAction();
+
+				int x = (int) event.getRawX();
+				int y = (int) event.getRawY();
+
+				switch (eventaction) {
+
+				case MotionEvent.ACTION_DOWN: // touch down so check if the
+					temp[0] = (int) event.getX();
+					temp[1] = y - v.getTop();
+					break;
+
+				case MotionEvent.ACTION_MOVE: // touch drag with the ball
+					v.layout(x - temp[0], y - temp[1], x + v.getWidth()
+							- temp[0], y - temp[1] + v.getHeight());
+
+					v.postInvalidate();
+					break;
+
+				case MotionEvent.ACTION_UP:
+					break;
+				}
+
+				return false;
+			}
+
+		});
+		
+		btn2.setOnTouchListener(new OnTouchListener() {
+			int[] temp = new int[] { 0, 0 };
+
+			public boolean onTouch(View v, MotionEvent event) {
+
+				int eventaction = event.getAction();
+
+				int x = (int) event.getRawX();
+				int y = (int) event.getRawY();
+
+				switch (eventaction) {
+
+				case MotionEvent.ACTION_DOWN: // touch down so check if the
+					temp[0] = (int) event.getX();
+					temp[1] = y - v.getTop();
+					break;
+
+				case MotionEvent.ACTION_MOVE: // touch drag with the ball
+					v.layout(x - temp[0], y - temp[1], x + v.getWidth()
+							- temp[0], y - temp[1] + v.getHeight());
+
+					v.postInvalidate();
+					break;
+
+				case MotionEvent.ACTION_UP:
+					break;
+				}
+
+				return false;
+			}
+
+		});
 	}
 	
 	public void initHelp(){
@@ -486,6 +590,10 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 				case 2:	// Favorite
 					initFavorite(0);
 					view = 2;
+					break;
+				case 3:
+					initRoute();
+					view = 3;
 					break;
 				case 5: // Help
 					initHelp();
@@ -607,20 +715,6 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         }catch(JSONException e){
         	Log.e("log_tag", e.toString());
         }
-		
-		// Example for testing
-        /*HashMap<String, String> data = new HashMap<String, String>();
-        data.put("name", "NTU");
-    	data.put("phone", "2222-3333");
-    	data.put("address", "羅斯福路");
-    	data.put("score", "5");
-    	data.put("content", "國立台灣大學");
-    	data.put("website", "www.ntu.edu.tw");
-    	MarkerOptions m = CreateMarkerOpt("NTU", "25.016347", "121.533722", "2222-3333");
-        Marker marker = gmap.addMarker(m);
-        extraMarkerInfo.put(marker.getId(),data);
-        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(new LatLng(25.016347, 121.533722), 13); // Taipei 101
-		gmap.animateCamera(update);*/
 	}
 	
 	public MarkerOptions CreateMarkerOpt(String name, String latitude, String longtitude, String phone){

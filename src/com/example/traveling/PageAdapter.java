@@ -1,28 +1,38 @@
 package com.example.traveling;
 
+import java.util.HashMap;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class PageAdapter extends PagerAdapter{
 	private static int Page_number = 2;
 	private String userid;
+	private FragmentManager fragmentManager;
+	HashMap<String, HashMap> extraMarkerInfo;	// A data structure which is used to store detail information of markers.
 	Context context;
 	
-	public PageAdapter(Context context, String id){
+	public PageAdapter(Context context, String id, FragmentManager fm){
 		this.context = context;
-		userid = id;
+		this.fragmentManager = fm;
+		userid = id;	
 	}
 	
 	@Override
@@ -52,7 +62,7 @@ public class PageAdapter extends PagerAdapter{
 				t = (TableLayout)inflater.inflate(R.layout.favorite_site, null);
 				
 				try {
-	                String result = DBconnector.executeQuery("SELECT * FROM collect_s WHERE fb_id=" + userid);
+	                String result = DBconnector.executeQuery("SELECT * FROM `collect_s`, `site` WHERE collect_s.fb_id=" + userid + " and site.site_id=collect_s.site_id");
 	                
 	                /* When SQL results contain many data using JSONArray
 	                   If only one data use JSONObject
@@ -60,14 +70,37 @@ public class PageAdapter extends PagerAdapter{
 	                JSONArray jsonArray = new JSONArray(result);
 	               
 	            	for(int i = 0; i < jsonArray.length(); i++){
+	            		HashMap<String, String> data = new HashMap<String, String>();
+	            		
 	            		JSONObject jsonData = jsonArray.getJSONObject(i);
-	                	String site_id = jsonData.getString("site_id");
+	                	String name = jsonData.getString("site_name");
+	                	data.put("name", name);
+	                	String phone = jsonData.getString("phone");
+	                	data.put("phone", phone);
+	                	String tag_r = jsonData.getString("tag_r");
+	                	String tag_s = jsonData.getString("tag_s");
 	                	
 	                	TableRow tr = new TableRow(context);
-	                	tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
-	                	TextView tx = new TextView(context);
-	                	tx.setText(site_id);
-	                	tr.addView(tx);
+	                	TableLayout.LayoutParams tableRowParams = new TableLayout.LayoutParams (TableLayout.LayoutParams.FILL_PARENT,TableLayout.LayoutParams.WRAP_CONTENT);
+	                	tableRowParams.setMargins(50, 10, 0, 10);
+	                	tr.setLayoutParams(tableRowParams);
+	                	tr.setOnClickListener(new OnClickListener(){
+	                	    public void onClick(View v){
+	                	    	Toast.makeText(context, "Click",Toast.LENGTH_LONG ).show();
+	                	    	//HashMap<String, String> site_data;
+	                     	    //DialogFragment dialog = InfoWindowDialog.newInstance(site_data);
+	            				//dialog.show(fragmentManager,"test");
+	                	    }
+	                	});
+	                	
+	                	View v = inflater.inflate(R.layout.block, null);
+	                	TextView site_name = (TextView) v.findViewById(R.id.SiteName);
+	                	site_name.setText(name);
+	                	TextView site_phone = (TextView)v.findViewById(R.id.SitePhone);
+	                	site_phone.setText("電話: "+ phone);
+	                	Button site_label = (Button) v.findViewById(R.id.SiteLabel);
+	                	//site_label.setText(getLable(tag_r, tag_s));
+	                	tr.addView(v);
 	                	t.addView(tr);
 	            	}
 	            	
@@ -80,7 +113,7 @@ public class PageAdapter extends PagerAdapter{
 				t = (TableLayout)inflater.inflate(R.layout.favorite_route, null);
 				
 				try {
-	                String result = DBconnector.executeQuery("SELECT * FROM collect_s WHERE fb_id=" + userid);
+					String result = DBconnector.executeQuery("SELECT * FROM `collect_t`, `travel` WHERE collect_t.fb_id=" + userid + " and travel.travel_id=collect_t.travel_id");
 	                
 	                /* When SQL results contain many data using JSONArray
 	                   If only one data use JSONObject
@@ -89,18 +122,42 @@ public class PageAdapter extends PagerAdapter{
 	               
 	            	for(int i = 0; i < jsonArray.length(); i++){
 	            		JSONObject jsonData = jsonArray.getJSONObject(i);
-	                	String site_id = jsonData.getString("travel_id");
+	                	String site_id = jsonData.getString("site_id");
 	                	
 	                	TableRow tr = new TableRow(context);
-	                	tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
-	                	TextView tx = new TextView(context);
-	                	tx.setText(site_id);
-	                	tr.addView(tx);
+	                	TableLayout.LayoutParams tableRowParams = new TableLayout.LayoutParams (TableLayout.LayoutParams.FILL_PARENT,TableLayout.LayoutParams.WRAP_CONTENT);
+	                	tableRowParams.setMargins(50, 10, 0, 10);
+	                	tr.setLayoutParams(tableRowParams);
+	                	tr.setOnClickListener(new OnClickListener(){
+	                	    public void onClick(View v){
+	                	    	Toast.makeText(context, "Click",Toast.LENGTH_LONG ).show();
+	                	    	//HashMap<String, String> site_data;
+	                     	    //DialogFragment dialog = InfoWindowDialog.newInstance(site_data);
+	            				//dialog.show(fragmentManager,"test");
+	                	    }
+	                	});
+	                	
+	                	View v = inflater.inflate(R.layout.block, null);
+	                	TextView site_name = (TextView) v.findViewById(R.id.SiteName);
+	                	site_name.setText(site_id);
+	                	TextView site_phone = (TextView)v.findViewById(R.id.SitePhone);
+	                	Button site_label = (Button) v.findViewById(R.id.SiteLabel);
+	                	//site_label.setText(getLable(tag_r, tag_s));
+	                	tr.addView(v);
 	                	t.addView(tr);
 	            	}
 	            	
 	            } catch(Exception e) {
 	                 Log.e("log_tag", e.toString());
+	                 TableRow tr = new TableRow(context);
+	                	TableLayout.LayoutParams tableRowParams = new TableLayout.LayoutParams (TableLayout.LayoutParams.FILL_PARENT,TableLayout.LayoutParams.WRAP_CONTENT);
+	                	tableRowParams.setMargins(50, 10, 0, 10);
+	                	tr.setLayoutParams(tableRowParams);
+	                 View v = inflater.inflate(R.layout.block, null);
+	                	TextView site_name = (TextView) v.findViewById(R.id.SiteName);
+	                	site_name.setText("您沒有收藏任何路線");
+	                	tr.addView(v);
+	                	t.addView(tr);
 	            }
 				
 				break;
@@ -157,4 +214,8 @@ public class PageAdapter extends PagerAdapter{
 	public void startUpdate(View arg0){
     
    	}
+	
+	private String getLabel(String tag_r, String tag_s){
+		return "";
+	}
 }
