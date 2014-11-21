@@ -19,6 +19,11 @@
         	android:layout_alignParentTop="true"
         	android:src="@drawable/my_favorite" />
   	   
+  	   <!--  <com.viewpagerindicator.TitlePageIndicator
+			android:id="@+id/titles"
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent" /> -->
+  	   
   	   <android.support.v4.view.ViewPager
     		android:id="@+id/favoritepager"
     		android:layout_width="match_parent" 

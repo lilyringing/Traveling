@@ -14,6 +14,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Context;
 import android.graphics.Color;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.text.TextUtils;
@@ -44,6 +47,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
@@ -62,6 +67,7 @@ import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -142,7 +148,40 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 		
-		return super.onCreateOptionsMenu(menu);
+		//menu.findItem(R.id.action_search).getActionView();
+		MenuItem searchItem = menu.findItem(R.id.action_search);		
+		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+		SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+	    searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+		
+		
+		// When using the support library, the setOnActionExpandListener() method is
+	    // static and accepts the MenuItem object as an argument
+	    MenuItemCompat.setOnActionExpandListener(searchItem, new OnActionExpandListener() {
+	        @Override
+	        public boolean onMenuItemActionCollapse(MenuItem item) {
+	        	Toast.makeText(getApplicationContext(), "collapse",Toast.LENGTH_LONG ).show();
+	        	// Do something when collapsed
+	            return true;  // Return true to collapse action view
+	        }
+
+	        @Override
+	        public boolean onMenuItemActionExpand(MenuItem item) {
+	        	Toast.makeText(getApplicationContext(), "expanded",Toast.LENGTH_LONG ).show();
+	        	// Do something when expanded
+	            return true;  // Return true to expand action view
+	        }
+	    });
+	    
+		// Get the SearchView and set the searchable configuration		
+		//SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+	    //SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+	    // Assumes current activity is the searchable activity
+	    //searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+	    //searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
+	    return true;
 	}
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -151,10 +190,29 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	        return true;
 	    }
 
-	    return super.onOptionsItemSelected(item);
+		switch(item.getItemId()){
+			case R.id.action_search:
+				 /*getActionBar().clearFocus();
+			        (new Handler()).postDelayed(new Runnable() {
+			            public void run() {
+			                mEtSearchbar.dispatchTouchEvent(MotionEvent.obtain(
+			                        SystemClock.uptimeMillis(),
+			                        SystemClock.uptimeMillis(),
+			                        MotionEvent.ACTION_DOWN, 0, 0, 0));
+			                mEtSearchbar.dispatchTouchEvent(MotionEvent.obtain(
+			                        SystemClock.uptimeMillis(),
+			                        SystemClock.uptimeMillis(), MotionEvent.ACTION_UP,
+			                        0, 0, 0));
+			            }
+			        }, 100);*/
+
+			        return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		} 
 	}
 	
-	@Override
+	/*@Override
 	public boolean onSearchRequested(){
 	 
 		String text=etdata.getText().toString();
@@ -166,7 +224,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		startSearch("mm", false, bundle, false);
 		//這個地方一定要返回真 如果只是super.onSearchRequested方法不但 onSearchRequested（搜索框預設值）無法添加到搜索框中,bundle也無法傳遞出去
 		return true;
-	}
+	}*/
 	
 	private void initMap(){
 		gmap.setMapType(GoogleMap.MAP_TYPE_NORMAL);	// Normal Map
@@ -194,7 +252,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		    public void onInfoWindowClick(Marker m) {
 				HashMap<String, String> marker_data = extraMarkerInfo.get(m.getId());
 				
-				DialogFragment dialog = InfoWindowDialog.newInstance(marker_data);
+				DialogFragment dialog = InfoWindowDialog.newInstance(marker_data, userid);
 				dialog.show(getSupportFragmentManager(),"test");
 			}
 		});
@@ -206,6 +264,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	private void initActionBar(){
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
+		getActionBar().setDisplayShowHomeEnabled(false);
 	}
 	
 	/* Initialize the layout of navigation drawer */
@@ -459,6 +518,9 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
             }
 
         });
+        
+        //TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
+        //titleIndicator.setViewPager(FavoritePager);
 	}
 	
 	public void initRoute(){
@@ -614,42 +676,61 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		}
 	}
 	
-	/*public void showMyDiary(View view){
-		TableLayout my_diary = (TableLayout)findViewById(R.id.my_diary);
-        my_diary.setStretchAllColumns(true);
-        TableLayout.LayoutParams row_layout = new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        TableRow.LayoutParams view_layout = new TableRow.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        try {
-        	System.out.println("Send query");
-            String result = DBconnector.executeQuery("SELECT * FROM user");
-            
-            /* When SQL results contain many data using JSONArray
-               If only one data use JSONObject
-               JSONObject jsonData = new JSONObject(result);*   /
-            System.out.println(result);
-            JSONArray jsonArray = new JSONArray(result);
-            for(int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonData = jsonArray.getJSONObject(i);
-                TableRow tr = new TableRow(MainActivity.this);
-                tr.setLayoutParams(row_layout);
-                tr.setGravity(Gravity.CENTER_HORIZONTAL);
-                
-                TextView user_acc = new TextView(MainActivity.this);
-                user_acc.setText(jsonData.getString("account"));
-                user_acc.setLayoutParams(view_layout);
-                
-                TextView user_pwd = new TextView(MainActivity.this);
-                user_pwd.setText(jsonData.getString("pwd"));
-                user_pwd.setLayoutParams(view_layout);
-                
-                tr.addView(user_acc);
-                tr.addView(user_pwd);
-                my_diary.addView(tr);
-            }
-        } catch(Exception e) {
-            // Log.e("log_tag", e.toString());
+	public void showMyLocation(View view){
+		// Enabling MyLocation Layer of Google Map
+		gmap.setMyLocationEnabled(true);
+		
+        // Getting LocationManager object from System Service LOCATION_SERVICE
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        // Creating a criteria object to retrieve provider
+        Criteria criteria = new Criteria();
+
+        // Getting the name of the best provider
+        String provider = locationManager.getBestProvider(criteria, true);
+
+        // Getting Current Location
+        Location location = locationManager.getLastKnownLocation(provider);
+
+        if(location!=null){
+        	// Getting latitude of the current location
+        	double latitude = location.getLatitude();
+
+        	// Getting longitude of the current location
+        	double longitude = location.getLongitude();
+
+        	// Creating a LatLng object for the current location
+        	LatLng MyPosition = new LatLng(latitude, longitude);
+        	gmap.addMarker(new MarkerOptions().position(MyPosition)
+        			           .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+        	CameraUpdate update = CameraUpdateFactory.newLatLngZoom(MyPosition, 13);
+        	gmap.animateCamera(update);
         }
-	}*/
+	}
+	
+	public void showMyFavorite(View view){
+		try{
+			String result = DBconnector.executeQuery("SELECT site_name FROM `collect_s`, `site` WHERE collect_s.fb_id=" + userid + " and site.site_id=collect_s.site_id");
+			Log.e("log_db", result);
+			JSONArray jsonArray = new JSONArray(result);
+        	int length = jsonArray.length();
+        	String[] favorite_site = new String[length];
+        	
+			for(int i = 0; i < length; i++){
+        		JSONObject jsonData = jsonArray.getJSONObject(i);
+        		favorite_site[i] = jsonData.getString("site_name");
+        	}
+			
+			String name = "favorite_site";
+			int array_id = getResources().getIdentifier(name, "array", this.getPackageName());
+			//int array_id = getApplicationContext().getResources().getIdentifier("favorite_site", "array", this.getPackageName());
+			Log.e("log_array", Integer.toString(array_id));
+			//R.string.class.getField("favorite_site").getInt(null);
+			
+		}catch(JSONException e){
+			Log.e("log_tag", e.toString());
+		}
+	}
 	
 	public void showRestaurant(View view){
 		DialogFragment RestaurantDialog = MapDialog.newInstance(R.string.restaurant, R.array.restaurant_menu);
@@ -692,6 +773,8 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         		JSONObject jsonData = jsonArray.getJSONObject(i);
             	
             	HashMap<String, String> data = new HashMap<String, String>();
+            	String site_id = jsonData.getString("site_id");
+            	data.put("siteid", site_id);
             	String name = jsonData.getString("site_name");
             	data.put("name", name);
             	String phone = jsonData.getString("phone");

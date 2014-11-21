@@ -19,10 +19,11 @@
         android:textColor="@android:color/black"
         android:textSize="10sp" />
 	
-	<!--  <CheckBox
+	<CheckBox
+	    android:id="@+id/favorite"
 	 	android:layout_width="wrap_content"
  		android:layout_height="wrap_content"
- 		android:button="@drawable/btn_heart"/>-->
+ 		android:button="@drawable/add_to_favorite"/>
 	
 	<TextView
         android:id="@+id/address"

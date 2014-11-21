@@ -50,8 +50,17 @@
         	android:layout_height="wrap_content"
         	style="?android:attr/buttonBarButtonStyle"
         	android:background="@color/forest_green"
-        	android:onClick="showRoute"
+        	android:onClick="showMyFavorite"
         	android:text="@string/my_favorite" />
+    		
+    		<Button
+			android:id="@+id/button4"
+       		android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	style="?android:attr/buttonBarButtonStyle"
+        	android:background="@color/forest_green"
+        	android:onClick="showMyLocation"
+        	android:text="@string/my_location" />
     	</LinearLayout>
   	    </fragment>
         	

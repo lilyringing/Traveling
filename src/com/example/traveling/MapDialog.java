@@ -9,7 +9,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class MapDialog extends DialogFragment {
-	static int mSelectedIndex;
+	int mSelectedIndex;
 	
 	public interface DialogFragmentListener {
         public void MarkOnMap(int title, int choice);
@@ -36,11 +36,13 @@ public class MapDialog extends DialogFragment {
         	   .setSingleChoiceItems(list, 0, new DialogInterface.OnClickListener(){
         		// which is the item is the list, start from 0
         		   public void onClick(DialogInterface dialog, int which){
+        			   Toast.makeText(getActivity(), which,Toast.LENGTH_LONG ).show();
         			   mSelectedIndex = which;
         		   }
         	   })
         	   .setPositiveButton("OK", new DialogInterface.OnClickListener() {
         		   public void onClick(DialogInterface dialog, int which){
+        			   Toast.makeText(getActivity(), which,Toast.LENGTH_LONG ).show();
         			   DialogFragmentListener activity = (DialogFragmentListener)getActivity();
         			   activity.MarkOnMap(t, mSelectedIndex);
         		   }
