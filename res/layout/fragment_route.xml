@@ -14,12 +14,12 @@
         android:baselineAligned="false">
 		
 		    <ScrollView 
-		        android:layout_width="400px"
+		        android:layout_width="350px"
 		        android:layout_height="fill_parent"
 		        android:background="#878787">
 				<LinearLayout
 				android:id="@+id/site_list"
-		    	android:layout_width="400px"
+		    	android:layout_width="350px"
 		   	 	android:layout_height="fill_parent"
 		    	android:orientation="vertical" >
 		
@@ -32,7 +32,7 @@
 			android:id="@+id/schedule"
 			android:layout_below="@+id/m"
 			android:layout_above="@+id/save"
-			android:layout_marginLeft="400px"
+			android:layout_marginLeft="350px"
 			android:layout_width="fill_parent"
 		  	android:layout_height="fill_parent"
 		   	android:orientation="vertical"
@@ -43,29 +43,29 @@
 			
 		   	<Button
 		    android:id="@+id/m"
-		    android:layout_marginLeft="400px"
-		    android:layout_width="150px"
+		    android:layout_marginLeft="350px"
+		    android:layout_width="100px"
 		    android:layout_height="wrap_content"
 		    android:text="早"
 		    android:onClick="onClick_Event" />
 		   	<Button
 		    android:id="@+id/d"
 		    android:layout_toRightOf="@+id/m"
-		    android:layout_width="150px"
+		    android:layout_width="100px"
 		    android:layout_height="wrap_content"
 		    android:text="中"
 		    android:onClick="onClick_Event" />
 		   	<Button
 		    android:id="@+id/n"
 		    android:layout_toRightOf="@+id/d"
-		    android:layout_width="150px"
+		    android:layout_width="100px"
 		    android:layout_height="wrap_content"
 		    android:text="晚" 
 		    android:onClick="onClick_Event"/>
 		   	
 		   	<Button
 		    android:id="@+id/save"
-		    android:layout_marginLeft="400px"
+		    android:layout_marginLeft="350px"
 		    android:layout_width="300px"
 		    android:layout_height="wrap_content"
 		    android:gravity="center_horizontal"
@@ -82,7 +82,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:background="#111"/>
+        android:divider="@color/line"
+        android:dividerHeight="1dp"
+        android:background="@color/drawer"
+        android:textColor="@color/text"/>
 </android.support.v4.widget.DrawerLayout>

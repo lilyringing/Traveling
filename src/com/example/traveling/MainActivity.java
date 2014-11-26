@@ -14,6 +14,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -168,41 +169,10 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	        			
 	        			Intent intent = new Intent(MainActivity.this, SearchResultActivity.class);
 	        			intent.putExtra("search_string", s);
-	        			startActivity(intent);
+	        			startActivityForResult(intent, 1);
 	        }
 	    });
 		
-		/*SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-		SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-	    searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default*/
-		
-		
-		// When using the support library, the setOnActionExpandListener() method is
-	    // static and accepts the MenuItem object as an argument
-	    /*MenuItemCompat.setOnActionExpandListener(searchItem, new OnActionExpandListener() {
-	        @Override
-	        public boolean onMenuItemActionCollapse(MenuItem item) {
-	        	Toast.makeText(getApplicationContext(), "collapse",Toast.LENGTH_LONG ).show();
-	        	// Do something when collapsed
-	            return true;  // Return true to collapse action view
-	        }
-
-	        @Override
-	        public boolean onMenuItemActionExpand(MenuItem item) {
-	        	Toast.makeText(getApplicationContext(), "expanded",Toast.LENGTH_LONG ).show();
-	        	// Do something when expanded
-	            return true;  // Return true to expand action view
-	        }
-	    });*/
-	    
-		// Get the SearchView and set the searchable configuration		
-		//SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-	    //SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-	    // Assumes current activity is the searchable activity
-	    //searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-	    //searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
-
 	    return true;
 	}
 	
@@ -235,20 +205,6 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 				return super.onOptionsItemSelected(item);
 		} 
 	}
-	
-	/*@Override
-	public boolean onSearchRequested(){
-	 
-		String text=etdata.getText().toString();
-		Bundle bundle=new Bundle();
-		bundle.putString("data", text);
-	 
-		//打開浮動搜索框（第一個參數預設添加到搜索框的值）
-		//bundle為傳遞的資料
-		startSearch("mm", false, bundle, false);
-		//這個地方一定要返回真 如果只是super.onSearchRequested方法不但 onSearchRequested（搜索框預設值）無法添加到搜索框中,bundle也無法傳遞出去
-		return true;
-	}*/
 	
 	private void initMap(){
 		gmap.setMapType(GoogleMap.MAP_TYPE_NORMAL);	// Normal Map
@@ -288,7 +244,8 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	private void initActionBar(){
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
-		getActionBar().setDisplayShowHomeEnabled(false);
+		getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#b47e13")));
+		//getActionBar().setDisplayShowHomeEnabled(false);
 	}
 	
 	/* Initialize the layout of navigation drawer */
@@ -555,7 +512,6 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		
 		try{
 			String result = DBconnector.executeQuery("SELECT * FROM `collect_s`, `site` WHERE collect_s.fb_id=" + userid + " and site.site_id=collect_s.site_id");
-			Log.e("log_db", result);
 			JSONArray jsonArray = new JSONArray(result);
         	
 			for(int i = 0; i < jsonArray.length(); i++){
@@ -569,31 +525,15 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
     	        {
     	        	public void onClick(View v){ //點擊左邊scrollview裡的button
     	                
-    	                LinearLayout rt = (LinearLayout)findViewById(R.id.schedule);        
+    	                LinearLayout rt = (LinearLayout)findViewById(R.id.schedule);             
     	                Button b = (Button)v;
-    	                rt.addView(b);
-    	                slist.add(b.getText().toString());
+    	                String site = b.getText().toString();
     	                
-    	                /*int i = v.getId();
-    	                int j = 100;
-    	                Button b = (Button)v;
-    	                String a = b.getText().toString();//取得點選button的text
-    	                //Toast.makeText(v.getContext(), "景點"+i, Toast.LENGTH_SHORT).show();//測試用
-    	                
-    	                Button btn = new Button((v.getContext());//建立一個新的button
-    	                btn.setText(a);
-    	                btn.setId(j);
-    	                j++;
-    	                rt.addView( btn );
-    	                slist.add(a);//存入slist裡
-    	                String test;//測試用→test是一整串排好的景點
-    	                test = slist.get(0);
-    	                if(slist.size()>1){
-    	                for(int k = 1 ; k <= slist.size()-1; k++){
-    	                	test = test + slist.get(k);
-    	                }
-    	                
-    	                Toast.makeText(v.getContext(), test, Toast.LENGTH_SHORT).show();*/
+    	                Button btn = new Button(v.getContext());
+    	                btn.setText(site);
+    	                btn.setId(v.getId());
+    	                rt.addView(btn);
+    	                slist.add(site);
     	            }
     	        });
     	        
