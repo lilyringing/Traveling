@@ -18,7 +18,9 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,9 +33,12 @@ import android.view.MotionEvent;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -90,6 +95,8 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	private FBFragment fbfragment;
 	private ViewPager FavoritePager;
 	private PageAdapter pageadapter;
+	private AutoCompleteTextView searchbar;
+	ArrayList<String> slist;
 	HashMap<String, HashMap> extraMarkerInfo;	// A data structure which is used to store detail information of markers.
 	String userid;
 	String username;
@@ -150,15 +157,30 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		
 		//menu.findItem(R.id.action_search).getActionView();
 		MenuItem searchItem = menu.findItem(R.id.action_search);		
-		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+		View actionview = searchItem.getActionView();
+		searchbar = ((AutoCompleteTextView)actionview.findViewById(R.id.search_editText));
+		final ImageView searchImage = ((ImageView)actionview.findViewById(R.id.search_image));
+	    
+		searchImage.setOnClickListener(new View.OnClickListener(){
+	        		@Override
+	        		public void onClick(View arg0) {
+	        			String s = searchbar.getText().toString();
+	        			
+	        			Intent intent = new Intent(MainActivity.this, SearchResultActivity.class);
+	        			intent.putExtra("search_string", s);
+	        			startActivity(intent);
+	        }
+	    });
+		
+		/*SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 		SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-	    searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+	    searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default*/
 		
 		
 		// When using the support library, the setOnActionExpandListener() method is
 	    // static and accepts the MenuItem object as an argument
-	    MenuItemCompat.setOnActionExpandListener(searchItem, new OnActionExpandListener() {
+	    /*MenuItemCompat.setOnActionExpandListener(searchItem, new OnActionExpandListener() {
 	        @Override
 	        public boolean onMenuItemActionCollapse(MenuItem item) {
 	        	Toast.makeText(getApplicationContext(), "collapse",Toast.LENGTH_LONG ).show();
@@ -172,7 +194,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	        	// Do something when expanded
 	            return true;  // Return true to expand action view
 	        }
-	    });
+	    });*/
 	    
 		// Get the SearchView and set the searchable configuration		
 		//SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -192,21 +214,23 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 
 		switch(item.getItemId()){
 			case R.id.action_search:
-				 /*getActionBar().clearFocus();
-			        (new Handler()).postDelayed(new Runnable() {
+				
+				searchbar.clearFocus();
+			    (new Handler()).postDelayed(new Runnable() {
 			            public void run() {
-			                mEtSearchbar.dispatchTouchEvent(MotionEvent.obtain(
+			            	searchbar.dispatchTouchEvent(MotionEvent.obtain(
 			                        SystemClock.uptimeMillis(),
 			                        SystemClock.uptimeMillis(),
 			                        MotionEvent.ACTION_DOWN, 0, 0, 0));
-			                mEtSearchbar.dispatchTouchEvent(MotionEvent.obtain(
+			            	searchbar.dispatchTouchEvent(MotionEvent.obtain(
 			                        SystemClock.uptimeMillis(),
 			                        SystemClock.uptimeMillis(), MotionEvent.ACTION_UP,
 			                        0, 0, 0));
 			            }
-			        }, 100);*/
+			    }, 100);
 
-			        return true;
+			    return true;
+			
 			default:
 				return super.onOptionsItemSelected(item);
 		} 
@@ -278,7 +302,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         drawerToggle = new ActionBarDrawerToggle(
         		this, 
                 MenuList,
-                R.drawable.ic_drawer, 
+                R.drawable.ic_drawer,
                 R.string.drawer_open,
                 R.string.drawer_close) {
         		
@@ -526,88 +550,63 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	public void initRoute(){
 		setContentView(R.layout.fragment_route);
 		
-		LinearLayout ll = (LinearLayout)findViewById(R.id.viewObj);
-		// 將 Button 1 加入到 LinearLayout 中
-        Button b1 = new Button(this);
-        b1.setText("Site1");
-        ll.addView( b1 );
-        b1.setId(1);
-        
-        // 將 Button 2 加入到 LinearLayout 中
-        Button b2 = new Button(this);
-        b2.setText("Site2");
-        ll.addView( b2 );
-        b2.setId(2);
-        
-        
-		final Button btn = (Button) findViewById(1);
-		final Button btn2 =(Button) findViewById(2);
-
-		btn.setOnTouchListener(new OnTouchListener() {
-			int[] temp = new int[] { 0, 0 };
-
-			public boolean onTouch(View v, MotionEvent event) {
-
-				int eventaction = event.getAction();
-
-				int x = (int) event.getRawX();
-				int y = (int) event.getRawY();
-
-				switch (eventaction) {
-
-				case MotionEvent.ACTION_DOWN: // touch down so check if the
-					temp[0] = (int) event.getX();
-					temp[1] = y - v.getTop();
-					break;
-
-				case MotionEvent.ACTION_MOVE: // touch drag with the ball
-					v.layout(x - temp[0], y - temp[1], x + v.getWidth()
-							- temp[0], y - temp[1] + v.getHeight());
-
-					v.postInvalidate();
-					break;
-
-				case MotionEvent.ACTION_UP:
-					break;
-				}
-
-				return false;
-			}
-
-		});
+		LinearLayout ll = (LinearLayout)findViewById(R.id.site_list);
+		slist = new ArrayList<String>();
 		
-		btn2.setOnTouchListener(new OnTouchListener() {
-			int[] temp = new int[] { 0, 0 };
-
-			public boolean onTouch(View v, MotionEvent event) {
-
-				int eventaction = event.getAction();
-
-				int x = (int) event.getRawX();
-				int y = (int) event.getRawY();
-
-				switch (eventaction) {
-
-				case MotionEvent.ACTION_DOWN: // touch down so check if the
-					temp[0] = (int) event.getX();
-					temp[1] = y - v.getTop();
-					break;
-
-				case MotionEvent.ACTION_MOVE: // touch drag with the ball
-					v.layout(x - temp[0], y - temp[1], x + v.getWidth()
-							- temp[0], y - temp[1] + v.getHeight());
-
-					v.postInvalidate();
-					break;
-
-				case MotionEvent.ACTION_UP:
-					break;
-				}
-
-				return false;
-			}
-
-		});
+		try{
+			String result = DBconnector.executeQuery("SELECT * FROM `collect_s`, `site` WHERE collect_s.fb_id=" + userid + " and site.site_id=collect_s.site_id");
+			Log.e("log_db", result);
+			JSONArray jsonArray = new JSONArray(result);
+        	
+			for(int i = 0; i < jsonArray.length(); i++){
+        		JSONObject jsonData = jsonArray.getJSONObject(i);        		
+        		Button btn = new Button(this);
+    	        
+    	        //initial site buttons
+    	        btn.setText(jsonData.getString("site_name"));
+    	        btn.setId(Integer.parseInt(jsonData.getString("site_id")));
+    	        btn.setOnClickListener(new View.OnClickListener()
+    	        {
+    	        	public void onClick(View v){ //點擊左邊scrollview裡的button
+    	                
+    	                LinearLayout rt = (LinearLayout)findViewById(R.id.schedule);        
+    	                Button b = (Button)v;
+    	                rt.addView(b);
+    	                slist.add(b.getText().toString());
+    	                
+    	                /*int i = v.getId();
+    	                int j = 100;
+    	                Button b = (Button)v;
+    	                String a = b.getText().toString();//取得點選button的text
+    	                //Toast.makeText(v.getContext(), "景點"+i, Toast.LENGTH_SHORT).show();//測試用
+    	                
+    	                Button btn = new Button((v.getContext());//建立一個新的button
+    	                btn.setText(a);
+    	                btn.setId(j);
+    	                j++;
+    	                rt.addView( btn );
+    	                slist.add(a);//存入slist裡
+    	                String test;//測試用→test是一整串排好的景點
+    	                test = slist.get(0);
+    	                if(slist.size()>1){
+    	                for(int k = 1 ; k <= slist.size()-1; k++){
+    	                	test = test + slist.get(k);
+    	                }
+    	                
+    	                Toast.makeText(v.getContext(), test, Toast.LENGTH_SHORT).show();*/
+    	            }
+    	        });
+    	        
+    	        /*修改button的外觀*/
+    	        btn.setTextColor(Color.parseColor("#C6A300"));//字的色
+    	        btn.getBackground().setColorFilter(Color.parseColor("#808040"), android.graphics.PorterDuff.Mode.MULTIPLY );//背景的色
+    	        ll.addView( btn );
+        	}
+			
+		}catch(JSONException e){
+			Log.e("log_tag", e.toString());
+		}
+		
 	}
 	
 	public void initHelp(){
@@ -813,4 +812,47 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		username = name;
 		initialize();
 	}
+	
+	public void onClick_Event(View view) {//生成「早」「中」「晚」三個button
+		  Toast.makeText(view.getContext(), "景點", Toast.LENGTH_SHORT).show();
+		  Button b = (Button)view;
+	        String a = b.getText().toString();
+	        LinearLayout rt = (LinearLayout)findViewById(R.id.schedule);
+	        Button btn = new Button(this);
+	        btn.setText(a);
+	        rt.addView( btn );           
+	    }
+	  
+	  public void onClick_Save(final View view) {//點擊「儲存」button
+		  AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		  /*dialog的設計*/
+		  builder.setTitle("Name");//標題
+		  builder.setMessage("為行程取個名字吧！") ;//內文
+		  final EditText input = new EditText(this);
+		  
+		  builder.setView(input);
+		  builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+		     @Override
+		     public void onClick(DialogInterface dialog, int which) {
+		        String name = input.getText().toString();
+		        Toast.makeText(view.getContext(), name, Toast.LENGTH_SHORT).show();//測試用→印出行程的名字
+		        
+		        /*把行程的Name(String name)和路線(ArrayList slist)存入DB
+		         * ArrayList 相關函式
+		         * slist.size()→傳回list大小(Int)
+		         * slist.get(i)→傳回第i個值(從0開始)
+		         * slist.isEmpty()→是否為空(True/False)*/
+		        
+		     }
+		  });
+		  builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		     @Override
+		     public void onClick(DialogInterface dialog, int which) {
+		        dialog.cancel();
+		     }
+		  });
+		   
+		  builder.show();    
+
+	   }
 }
