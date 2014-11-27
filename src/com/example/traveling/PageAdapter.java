@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
@@ -26,13 +27,19 @@ public class PageAdapter extends PagerAdapter{
 	private static int Page_number = 2;
 	private String userid;
 	private FragmentManager fragmentManager;
+	private String[] spot_menu;
+	private String[] restaurant_menu;
 	HashMap<String, HashMap> extraMarkerInfo;	// A data structure which is used to store detail information of markers.
 	Context context;
 	
 	public PageAdapter(Context context, String id, FragmentManager fm){
 		this.context = context;
 		this.fragmentManager = fm;
-		userid = id;	
+		userid = id;
+		
+		Resources res = context.getResources();
+		spot_menu = res.getStringArray(R.array.spot_menu);
+		restaurant_menu = res.getStringArray(R.array.restaurant_menu);
 	}
 	
 	@Override
@@ -63,7 +70,7 @@ public class PageAdapter extends PagerAdapter{
 				
 				try {
 	                String result = DBconnector.executeQuery("SELECT * FROM `collect_s`, `site` WHERE collect_s.fb_id=" + userid + " and site.site_id=collect_s.site_id");
-	                
+	                Log.e("DB", result);
 	                /* When SQL results contain many data using JSONArray
 	                   If only one data use JSONObject
 	                   JSONObject jsonData = new JSONObject(result);*/
@@ -79,17 +86,23 @@ public class PageAdapter extends PagerAdapter{
 	                	data.put("phone", phone);
 	                	String tag_r = jsonData.getString("tag_r");
 	                	String tag_s = jsonData.getString("tag_s");
+	                	data.put("address", jsonData.getString("address"));
+	                	data.put("score", jsonData.getString("score"));
+	                	data.put("content", jsonData.getString("content"));
+	                	data.put("open", jsonData.getString("open"));
+	                	data.put("ticket", jsonData.getString("ticket"));
+	                	data.put("website", jsonData.getString("website"));
 	                	
+	                	final HashMap<String, String> site_data = data;
 	                	TableRow tr = new TableRow(context);
 	                	TableLayout.LayoutParams tableRowParams = new TableLayout.LayoutParams (TableLayout.LayoutParams.FILL_PARENT,TableLayout.LayoutParams.WRAP_CONTENT);
 	                	tableRowParams.setMargins(50, 10, 0, 10);
 	                	tr.setLayoutParams(tableRowParams);
 	                	tr.setOnClickListener(new OnClickListener(){
 	                	    public void onClick(View v){
-	                	    	Toast.makeText(context, "Click",Toast.LENGTH_LONG ).show();
-	                	    	//HashMap<String, String> site_data;
-	                     	    //DialogFragment dialog = InfoWindowDialog.newInstance(site_data);
-	            				//dialog.show(fragmentManager,"test");
+	                	    	
+	                	    	DialogFragment dialog = InfoWindowDialog.newInstance(site_data, userid);
+	            				dialog.show(fragmentManager,"test");
 	                	    }
 	                	});
 	                	
@@ -99,13 +112,31 @@ public class PageAdapter extends PagerAdapter{
 	                	TextView site_phone = (TextView)v.findViewById(R.id.SitePhone);
 	                	site_phone.setText("電話: "+ phone);
 	                	Button site_label = (Button) v.findViewById(R.id.SiteLabel);
-	                	//site_label.setText(getLable(tag_r, tag_s));
+	                	if(tag_r.equals("")){
+	                		site_label.setText(tag_s);
+	                	}else{
+	                		site_label.setText(tag_r);
+	                	}
+
 	                	tr.addView(v);
 	                	t.addView(tr);
 	            	}
 	            	
 	            } catch(Exception e) {
 	                 Log.e("log_tag", e.toString());
+	                 	TableRow tr = new TableRow(context);
+	                	TableLayout.LayoutParams tableRowParams = new TableLayout.LayoutParams (TableLayout.LayoutParams.FILL_PARENT,TableLayout.LayoutParams.WRAP_CONTENT);
+	                	tableRowParams.setMargins(50, 10, 0, 10);
+	                	tr.setLayoutParams(tableRowParams);
+	                	View v = inflater.inflate(R.layout.block, null);
+	                	TextView site_name = (TextView) v.findViewById(R.id.SiteName);
+	                	site_name.setText("您沒有收藏任何景點");
+	                	TextView site_phone = (TextView)v.findViewById(R.id.SitePhone);
+	                	site_phone.setText("");
+	                	Button site_label = (Button) v.findViewById(R.id.SiteLabel);
+	                	site_label.setVisibility(View.INVISIBLE);
+	                	tr.addView(v);
+	                	t.addView(tr);
 	            }
 				
 				break;
@@ -156,6 +187,10 @@ public class PageAdapter extends PagerAdapter{
 	                 View v = inflater.inflate(R.layout.block, null);
 	                	TextView site_name = (TextView) v.findViewById(R.id.SiteName);
 	                	site_name.setText("您沒有收藏任何路線");
+	                	TextView site_phone = (TextView)v.findViewById(R.id.SitePhone);
+	                	site_phone.setText("");
+	                	Button site_label = (Button) v.findViewById(R.id.SiteLabel);
+	                	site_label.setVisibility(View.INVISIBLE);
 	                	tr.addView(v);
 	                	t.addView(tr);
 	            }
@@ -171,6 +206,15 @@ public class PageAdapter extends PagerAdapter{
 		return t;
 	}
 	
+	private CharSequence getLable(String tag_r, String tag_s) {
+		if(tag_r.equals(null)){
+			return spot_menu[Integer.parseInt(tag_s)];
+    	}else{
+    		return restaurant_menu[Integer.parseInt(tag_r)];
+    		
+    	}
+	}
+
 	/**
      * Remove a page for the given position.  The adapter is responsible
      * for removing the view from its container, although it only must ensure
@@ -214,8 +258,4 @@ public class PageAdapter extends PagerAdapter{
 	public void startUpdate(View arg0){
     
    	}
-	
-	private String getLabel(String tag_r, String tag_s){
-		return "";
-	}
 }

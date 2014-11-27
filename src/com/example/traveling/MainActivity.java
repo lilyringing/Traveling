@@ -13,6 +13,7 @@ import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Criteria;
@@ -649,8 +650,8 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	
 	public void showMyFavorite(View view){
 		try{
-			String result = DBconnector.executeQuery("SELECT site_name FROM `collect_s`, `site` WHERE collect_s.fb_id=" + userid + " and site.site_id=collect_s.site_id");
-			Log.e("log_db", result);
+			String result = DBconnector.executeQuery("SELECT * FROM `collect_s`, `site` WHERE collect_s.fb_id=" + userid + " and site.site_id=collect_s.site_id");
+			
 			JSONArray jsonArray = new JSONArray(result);
         	int length = jsonArray.length();
         	String[] favorite_site = new String[length];
@@ -660,11 +661,8 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         		favorite_site[i] = jsonData.getString("site_name");
         	}
 			
-			String name = "favorite_site";
-			int array_id = getResources().getIdentifier(name, "array", this.getPackageName());
-			//int array_id = getApplicationContext().getResources().getIdentifier("favorite_site", "array", this.getPackageName());
-			Log.e("log_array", Integer.toString(array_id));
-			//R.string.class.getField("favorite_site").getInt(null);
+			DialogFragment SpotDialog = MapDialog.newInstance(R.string.my_favorite, favorite_site);
+			SpotDialog.show(getSupportFragmentManager(),"Favorite");
 			
 		}catch(JSONException e){
 			Log.e("log_tag", e.toString());
@@ -672,23 +670,20 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	}
 	
 	public void showRestaurant(View view){
-		DialogFragment RestaurantDialog = MapDialog.newInstance(R.string.restaurant, R.array.restaurant_menu);
+		Resources res = getResources();
+		String[] restaurant_menu = res.getStringArray(R.array.restaurant_menu);
+		
+		DialogFragment RestaurantDialog = MapDialog.newInstance(R.string.restaurant, restaurant_menu);
 		RestaurantDialog.show(getSupportFragmentManager(),"Restaurant");
 	}
 	
 	public void showSpot(View view){
-		DialogFragment SpotDialog = MapDialog.newInstance(R.string.spot, R.array.spot_menu);
+		Resources res = getResources();
+		String[] spot_menu = res.getStringArray(R.array.spot_menu);
+		
+		DialogFragment SpotDialog = MapDialog.newInstance(R.string.spot, spot_menu);
 		SpotDialog.show(getSupportFragmentManager(),"Spot");
 		
-	}
-	
-	public void showRoute(View view){
-		PolylineOptions line = new PolylineOptions();
-		line.add(new LatLng(25.016347, 121.533722), new LatLng(25.033611, 121.565000))
-			.width(5)
-			.color(Color.RED);
-		
-		gmap.addPolyline(line);
 	}
 	
 	@Override
