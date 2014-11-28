@@ -32,7 +32,7 @@
         	android:layout_height="wrap_content"
         	style="?android:attr/buttonBarButtonStyle"
         	android:background="@color/button"
-        	android:textColor="@color/text"
+        	android:textColor="@color/button_text"
         	android:onClick="showRestaurant"
         	android:text="@string/restaurant" />
     		
@@ -42,7 +42,7 @@
         	android:layout_height="wrap_content"
         	style="?android:attr/buttonBarButtonStyle"
         	android:background="@color/button"
-        	android:textColor="@color/text"
+        	android:textColor="@color/button_text"
         	android:onClick="showSpot"
         	android:text="@string/spot" />
     		
@@ -52,7 +52,7 @@
         	android:layout_height="wrap_content"
         	style="?android:attr/buttonBarButtonStyle"
         	android:background="@color/button"
-        	android:textColor="@color/text"
+        	android:textColor="@color/button_text"
         	android:onClick="showMyFavorite"
         	android:text="@string/my_favorite" />
     		
@@ -62,7 +62,7 @@
         	android:layout_height="wrap_content"
         	style="?android:attr/buttonBarButtonStyle"
         	android:background="@color/button"
-        	android:textColor="@color/text"
+        	android:textColor="@color/button_text"
         	android:onClick="showMyLocation"
         	android:text="@string/my_location" />
     	</LinearLayout>
@@ -79,5 +79,5 @@
         android:divider="@color/line"
         android:dividerHeight="1dp"
         android:background="@color/drawer"
-        android:textColor="@color/text"/>
+        android:textColor="@color/button_text"/>
 </android.support.v4.widget.DrawerLayout>

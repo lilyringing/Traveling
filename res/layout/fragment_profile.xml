@@ -96,5 +96,5 @@
         android:divider="@color/line"
         android:dividerHeight="1dp"
         android:background="@color/drawer"
-        android:textColor="@color/text"/>
+        android:textColor="@color/button_text"/>
 </android.support.v4.widget.DrawerLayout>

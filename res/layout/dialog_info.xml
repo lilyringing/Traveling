@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
 	android:orientation="vertical" >
@@ -7,63 +7,119 @@
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:padding="5dp"
-        android:textColor="@android:color/black"
-        android:textSize="15sp"
+        android:textColor="@color/dialog_text"
+        android:textSize="22sp"
         android:textStyle="bold" />
-	<TextView
-        android:id="@+id/phone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:textColor="@android:color/black"
-        android:textSize="10sp" />
+	
+	<RatingBar
+	    android:id="@+id/score"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content" 
+	    android:layout_below="@+id/name"
+	    android:layout_marginLeft="100dp"/>
 	
 	<CheckBox
 	    android:id="@+id/favorite"
 	 	android:layout_width="wrap_content"
  		android:layout_height="wrap_content"
+ 		android:layout_marginLeft="220dp"
  		android:button="@drawable/add_to_favorite"/>
+	
+	<Button
+	    android:id="@+id/tag"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_below="@+id/name"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/tag"
+        android:textColor="@color/dialog_text"
+        android:textSize="18sp" />
 	
 	<TextView
         android:id="@+id/address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/tag"
+        android:layout_marginLeft="20dp"
         android:padding="5dp"
-        android:textColor="@android:color/black"
-        android:textSize="10sp" />
-	<RatingBar
-	    android:id="@+id/score"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"/>
+        android:textColor="@color/dialog_text"
+        android:textSize="18sp" />
+	
+	<TextView
+        android:id="@+id/phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/address"
+        android:padding="5dp"
+        android:textColor="@color/dialog_text"
+        android:textSize="18sp" />
+	
+	<TextView
+        android:id="@+id/open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+       	android:layout_below="@+id/phone"
+        android:padding="5dp"
+        android:textColor="@color/dialog_text"
+        android:textSize="18sp" />
+	
+	<TextView
+        android:id="@+id/website"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/open"
+        android:padding="5dp"
+        android:textColor="@color/dialog_text"
+        android:textSize="18sp" />
+	
+	<TextView
+        android:id="@+id/ticket"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/website"
+        android:padding="5dp"
+        android:textColor="@color/dialog_text"
+        android:textSize="18sp" />
 	
 	<TextView
         android:id="@+id/content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/ticket"
         android:padding="5dp"
-        android:textColor="@android:color/black"
-        android:textSize="10sp" />
-	<TextView
-        android:id="@+id/open"
-        android:layout_width="wrap_content"
+        android:textColor="@color/dialog_text"
+        android:textSize="18sp" />
+	
+	<Button
+	    android:id="@+id/showComment"
+	    android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/content"
+        android:layout_marginLeft="110dp"
         android:padding="5dp"
-        android:textColor="@android:color/black"
-        android:textSize="10sp" />
-	<TextView
-        android:id="@+id/ticket"
-        android:layout_width="wrap_content"
+        android:background="@color/tag"
+        android:textColor="@color/dialog_text"
+        android:text="查看評論"
+        android:textSize="18sp"/>
+	
+	<Button
+	    android:id="@+id/comment"
+	    android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/content"
+        android:layout_marginLeft="210dp"
         android:padding="5dp"
-        android:textColor="@android:color/black"
-        android:textSize="10sp" />
-	<TextView
-        android:id="@+id/website"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:textColor="@android:color/black"
-        android:textSize="10sp" />
-
-</LinearLayout>
+        android:background="@color/tag"
+        android:textColor="@color/dialog_text"
+        android:text="撰寫評論"
+        android:textSize="18sp"/>
+</RelativeLayout>

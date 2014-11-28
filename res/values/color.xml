@@ -8,9 +8,11 @@
     <color name="light_purple">#9F88FF</color>
     <color name="blue_green">#009FCC</color>
     <color name="transparent">#00000000</color>
-    <color name="bar">#b47e13</color>
+    <color name="bar">#FFAA00</color>
     <color name="button">#c6a055</color>
-    <color name="text">#340100</color>
+    <color name="button_text">#340100</color>
     <color name="line">#f2d598</color>
-    <color name="drawer">#fff0d1</color>
+    <color name="drawer">#FFD073</color>
+    <color name="dialog_text">#a66f00</color>
+    <color name="tag">#ffbf40</color>
 </resources>

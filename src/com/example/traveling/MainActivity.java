@@ -233,7 +233,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		    public void onInfoWindowClick(Marker m) {
 				HashMap<String, String> marker_data = extraMarkerInfo.get(m.getId());
 				
-				DialogFragment dialog = InfoWindowDialog.newInstance(marker_data, userid);
+				DialogFragment dialog = InfoWindowDialog.newInstance(marker_data, userid, getSupportFragmentManager());
 				dialog.show(getSupportFragmentManager(),"test");
 			}
 		});
@@ -718,8 +718,13 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
             	String lnt = jsonData.getString("longitude");
             	data.put("score", jsonData.getString("score"));
             	data.put("content", jsonData.getString("content"));
-            	//data.put("tagr", jsonData.getString("Tag_R"));
-            	//data.put("tags", jsonData.getString("Tag_S"));
+            	String tag_r = jsonData.getString("tag_r");
+            	String tag_s = jsonData.getString("tag_s");
+            	if(tag_r.equals("")){
+            		data.put("tag", tag_s);
+            	}else{
+            		data.put("tag", tag_r);
+            	}
             	data.put("open", jsonData.getString("open"));
             	data.put("ticket", jsonData.getString("ticket"));
             	data.put("website", jsonData.getString("website"));

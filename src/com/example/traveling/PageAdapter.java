@@ -101,7 +101,7 @@ public class PageAdapter extends PagerAdapter{
 	                	tr.setOnClickListener(new OnClickListener(){
 	                	    public void onClick(View v){
 	                	    	
-	                	    	DialogFragment dialog = InfoWindowDialog.newInstance(site_data, userid);
+	                	    	DialogFragment dialog = InfoWindowDialog.newInstance(site_data, userid, fragmentManager);
 	            				dialog.show(fragmentManager,"test");
 	                	    }
 	                	});
@@ -114,8 +114,10 @@ public class PageAdapter extends PagerAdapter{
 	                	Button site_label = (Button) v.findViewById(R.id.SiteLabel);
 	                	if(tag_r.equals("")){
 	                		site_label.setText(tag_s);
+	                		data.put("tag", tag_s);
 	                	}else{
 	                		site_label.setText(tag_r);
+	                		data.put("tag", tag_r);
 	                	}
 
 	                	tr.addView(v);
