@@ -19,13 +19,14 @@
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content" 
 	    android:layout_below="@+id/name"
-	    android:layout_marginLeft="100dp"/>
+	    android:layout_marginLeft="100dp"
+	    style="?android:attr/ratingBarStyleIndicator"/>
 	
 	<CheckBox
 	    android:id="@+id/favorite"
 	 	android:layout_width="wrap_content"
  		android:layout_height="wrap_content"
- 		android:layout_marginLeft="220dp"
+ 		android:layout_marginLeft="230dp"
  		android:button="@drawable/add_to_favorite"/>
 	
 	<Button
@@ -116,7 +117,7 @@
 	    android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/content"
-        android:layout_marginLeft="210dp"
+        android:layout_marginLeft="215dp"
         android:padding="5dp"
         android:background="@color/tag"
         android:textColor="@color/dialog_text"

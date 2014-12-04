@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+	<!-- The main content view -->
+  	<TableLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+        <TableRow
+    		android:layout_width="match_parent"
+        	android:layout_height="match_parent"
+    		android:background="@color/bar">
+    		
+            <TextView
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:layout_marginLeft="10dp"
+        	android:textSize="20sp"
+        	android:textColor="@color/button_text"
+        	android:text="記錄生活，享受生活，讓崔佛羚陪你一起探索生命中的美好樂趣！" />	
+    	</TableRow>
+     </TableLayout>	
+    
+	<!-- The navigation drawer -->
+    <ListView android:id="@+id/left_drawer"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:divider="@color/line"
+        android:dividerHeight="1dp"
+        android:background="@color/drawer"/>
+</android.support.v4.widget.DrawerLayout>

@@ -18,6 +18,8 @@ public final class R {
     }
     public static final class array {
         public static final int drawer_menu=0x7f0d0000;
+        public static final int help_list_mail=0x7f0d0004;
+        public static final int help_list_name=0x7f0d0003;
         public static final int restaurant_menu=0x7f0d0002;
         public static final int spot_menu=0x7f0d0001;
     }
@@ -1776,7 +1778,6 @@ containing a value of this type.
     public static final class id {
         public static final int Age=0x7f09009a;
         public static final int Birthday=0x7f090099;
-        public static final int ELview=0x7f090095;
         public static final int Gender=0x7f090098;
         public static final int My_Favorite=0x7f090093;
         public static final int SiteBlock=0x7f090059;
@@ -1865,6 +1866,7 @@ containing a value of this type.
         public static final int favoritepager=0x7f090094;
         public static final int grayscale=0x7f090012;
         public static final int grouptextView1=0x7f0900a3;
+        public static final int help_table=0x7f090095;
         public static final int holo_dark=0x7f090005;
         public static final int holo_light=0x7f090006;
         public static final int home=0x7f090026;
@@ -2020,17 +2022,18 @@ containing a value of this type.
         public static final int favorite_route=0x7f03002d;
         public static final int favorite_site=0x7f03002e;
         public static final int fb_login=0x7f03002f;
-        public static final int fragment_favorite=0x7f030030;
-        public static final int fragment_help=0x7f030031;
-        public static final int fragment_profile=0x7f030032;
-        public static final int fragment_route=0x7f030033;
-        public static final int group=0x7f030034;
-        public static final int infowindow=0x7f030035;
-        public static final int listview_dialog=0x7f030036;
-        public static final int main=0x7f030037;
-        public static final int search_bar=0x7f030038;
-        public static final int site=0x7f030039;
-        public static final int support_simple_spinner_dropdown_item=0x7f03003a;
+        public static final int fragment_about=0x7f030030;
+        public static final int fragment_favorite=0x7f030031;
+        public static final int fragment_help=0x7f030032;
+        public static final int fragment_profile=0x7f030033;
+        public static final int fragment_route=0x7f030034;
+        public static final int group=0x7f030035;
+        public static final int infowindow=0x7f030036;
+        public static final int listview_dialog=0x7f030037;
+        public static final int main=0x7f030038;
+        public static final int search_bar=0x7f030039;
+        public static final int site=0x7f03003a;
+        public static final int support_simple_spinner_dropdown_item=0x7f03003b;
     }
     public static final class menu {
         public static final int main=0x7f0e0000;

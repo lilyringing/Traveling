@@ -445,19 +445,12 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         elv.setAdapter(viewAdapter);
         
         /*子項按鈕*/
-        elv.setOnChildClickListener(new OnChildClickListener()  
-        {  
-        	
+        elv.setOnChildClickListener(new OnChildClickListener(){  
         	@Override  
             public boolean onChildClick(ExpandableListView parent, View v,  
-                    int groupPosition, int childPosition, long id)  
-            {
-        	
-        		
+                    int groupPosition, int childPosition, long id){		
         		String t = viewAdapter.getChild(groupPosition,childPosition).toString();
         		String title = t.substring(7,t.length()-1);
-        		
-        		//Toast.makeText(getBaseContext(), groupPosition,Toast.LENGTH_LONG ).show();
         		
         		if(title.equals("more")){
         			switch(groupPosition){
@@ -472,6 +465,8 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         				default:
         					break;
         			}
+        		}else{
+        			
         		}
         		
 				return false; 
@@ -550,29 +545,37 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		
 	}
 	
-	public void initHelp(){
-		setContentView(R.layout.fragment_help);
+	public void initSocial(){
 		
-		/*建listview*/
-        /*ExpandableListView elv = (ExpandableListView)findViewById(R.id.ELview);
-		List<Map<String, String>> groups = new ArrayList<Map<String, String>>();
-        Map<String, String> group1 = new HashMap<String, String>();
-        group1.put("group", "登入問題");
-        Map<String, String> group2 = new HashMap<String, String>();
-        group2.put("group", "地圖問題");
-        groups.add(group1);
-        groups.add(group2);
-        
-        List<Map<String, String>> child1 = new ArrayList<Map<String, String>>();
-        Map<String, String> child1Data1 = new HashMap<String, String>();
-        child1Data1.put("child", "FB");
-        Map<String, String> child1Data2 = new HashMap<String, String>();
-        child1Data2.put("child", "Can save your favorite");
-        child1.add(child1Data1);
-        child1.add(child1Data2);
-        
-        List<List<Map<String, String>>> childs = new ArrayList<List<Map<String, String>>>();
-        childs.add(child1);*/
+	}
+	
+	public void Help(){
+		setContentView(R.layout.fragment_help);
+		TableLayout t = (TableLayout)findViewById(R.id.help_table);
+		Resources res = getResources();
+		String[] namelist = res.getStringArray(R.array.help_list_name);
+		String[] maillist = res.getStringArray(R.array.help_list_mail);
+		
+		for(int i = 0; i < 4; i++){
+			TableRow tr = new TableRow(this);
+			TableLayout.LayoutParams tableRowParams = new TableLayout.LayoutParams (TableLayout.LayoutParams.FILL_PARENT,TableLayout.LayoutParams.WRAP_CONTENT);
+        	tableRowParams.setMargins(50, 10, 0, 10);
+        	tr.setLayoutParams(tableRowParams);
+
+    		TextView name = new TextView(this);
+    		name.setText(namelist[i]);
+    		
+    		TextView mail = new TextView(this);
+    		mail.setText("信箱: "+ maillist[i]);
+    		tr.addView(name);
+        	tr.addView(mail);
+        	t.addView(tr);
+		}
+		
+	}
+	
+	public void About(){
+		setContentView(R.layout.fragment_about);
 	}
 	
 	/* Change main content view when click items in the drawer */ 
@@ -593,13 +596,21 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 					initFavorite(0);
 					view = 2;
 					break;
-				case 3:
+				case 3: // Route
 					initRoute();
 					view = 3;
 					break;
+				case 4:
+					initSocial();
+					view = 4;
+					break;
 				case 5: // Help
-					initHelp();
+					Help();
 					view = 5;
+					break;
+				case 6: // About
+					About();
+					view = 6;
 					break;
 				default:
 					return;

@@ -52,5 +52,17 @@
     <string name="More">[More]</string>
     <string name="my_location">我的位置</string>
     <string name="Ok">OK</string>
+    <string-array name="help_list_name">
+        <item >蔡伶</item>
+        <item >陳韋志</item>
+        <item >何品璇</item>
+        <item >黃淳思</item>
+    </string-array>
+    <string-array name="help_list_mail">
+        <item >b00705025@ntu.edu.tw</item>
+        <item >b00705023@ntu.edu.tw</item>
+        <item >b00705026@ntu.edu.tw</item>
+        <item >b00705021@ntu.edu.tw</item>
+    </string-array>
 
 </resources>

@@ -8,4 +8,4 @@
     android:padding="10dp"
     android:text="@string/item"
     android:textAppearance="?android:attr/textAppearanceMedium"
-    android:textColor="#cccccc" />
+    android:textColor="@color/button_text" />
