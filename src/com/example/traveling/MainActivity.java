@@ -170,7 +170,8 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	        			
 	        			Intent intent = new Intent(MainActivity.this, SearchResultActivity.class);
 	        			intent.putExtra("search_string", s);
-	        			startActivityForResult(intent, 1);
+	        			intent.putExtra("userid", userid);
+	        			startActivity(intent);
 	        }
 	    });
 		

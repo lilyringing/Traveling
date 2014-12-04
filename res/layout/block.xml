@@ -45,12 +45,23 @@
         android:id="@+id/SiteLabel"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:layout_alignRight="@+id/SiteName"
         android:layout_below="@+id/SitePhone"
         android:layout_marginLeft="130dp"
         android:background="@color/button"
         android:textColor="@color/button_text"
         android:text="Label"
         android:textSize="15sp" />
-        	
+
+     <Button
+          android:id="@+id/SiteOnMap"
+         android:layout_width="wrap_content"
+         android:layout_height="30dp"
+         android:layout_below="@+id/SitePhone"
+         android:layout_marginLeft="18dp"
+         android:layout_toRightOf="@+id/SitePhone"
+         android:background="@color/button"
+         android:text="顯示位置"
+         android:textColor="@color/button_text"
+         android:textSize="15sp" />
+   	
 </RelativeLayout>

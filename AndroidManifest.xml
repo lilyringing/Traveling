@@ -38,7 +38,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <meta-data android:name="android.app.default_searchable"
-					   android:value=".SearchResultActivity"/>
+					   android:value=".SearchResultActivity"
+					   android:icon="@drawable/ic_action_search"/>
         </activity>
         
       	<activity android:name="com.facebook.LoginActivity"/>
