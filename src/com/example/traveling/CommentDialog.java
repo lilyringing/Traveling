@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.RatingBar;
 
 public class CommentDialog extends DialogFragment{
 	public static CommentDialog newInstance(String site_id){
@@ -23,11 +25,21 @@ public class CommentDialog extends DialogFragment{
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		View v = inflater.inflate(R.layout.comment, null);
+		final RatingBar scoreBar = (RatingBar)v.findViewById(R.id.score);
+		final EditText editTextComment = (EditText)v.findViewById(R.id.input_comment);
 		
 		builder.setView(v);
 		builder.setPositiveButton(R.string.Ok, new DialogInterface.OnClickListener(){
 			public void onClick(DialogInterface dialog, int id){
 				// insert into DB
+				String siteid = getArguments().getString("siteid");
+				//testing use
+				String userid = "1234567";
+				float rate = scoreBar.getRating();
+				String comment = editTextComment.getText().toString();
+				String query = "INSERT INTO `comment`(`user_id`, `site_id`, `rate`, `content`) VALUES ("
+						                              +userid+", "+siteid+", "+rate+", "+comment+")";
+				DBconnector.executeQuery(query);
 			}
 		});
 		

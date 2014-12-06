@@ -98,7 +98,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	private ViewPager FavoritePager;
 	private PageAdapter pageadapter;
 	private AutoCompleteTextView searchbar;
-	ArrayList<String> slist;
+	ArrayList<Integer> slist;
 	HashMap<String, HashMap> extraMarkerInfo;	// A data structure which is used to store detail information of markers.
 	String userid;
 	String username;
@@ -509,7 +509,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		setContentView(R.layout.fragment_route);
 		
 		LinearLayout ll = (LinearLayout)findViewById(R.id.site_list);
-		slist = new ArrayList<String>();
+		slist = new ArrayList<Integer>();
 		
 		try{
 			String result = DBconnector.executeQuery("SELECT * FROM `collect_s`, `site` WHERE collect_s.fb_id=" + userid + " and site.site_id=collect_s.site_id");
@@ -534,7 +534,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
     	                btn.setText(site);
     	                btn.setId(v.getId());
     	                rt.addView(btn);
-    	                slist.add(site);
+    	                slist.add(v.getId());
     	            }
     	        });
     	        
@@ -782,6 +782,27 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		         * slist.size()→傳回list大小(Int)
 		         * slist.get(i)→傳回第i個值(從0開始)
 		         * slist.isEmpty()→是否為空(True/False)*/
+		        try
+	        	{
+	        		//make a new travel in ownership table
+	        		String result = DBconnector.executeQuery("INSERT INTO `ownership`(`owner`) VALUES ("+userid+");" +
+	        				                                 "SELECT LAST_INSERT_ID()");
+	        		JSONArray jsonArray = new JSONArray(result);
+	        		JSONObject jsonData = jsonArray.getJSONObject(0);
+	        		//get the new inserted travel id from the sent query
+	        		int travel_id = Integer.getInteger(jsonData.getString("LAST_INSERT_ID()"));
+	        		
+	        		for( int i = 0; i < slist.size(); i++ )
+			        {
+			        	int site_id = slist.get(i);
+			        	DBconnector.executeQuery("INSERT INTO `travel`(`travel_id`, `sequence`, `site_id`) VALUES ("+travel_id+","+i+","+site_id+")");
+			        }
+	        		
+	        	}
+	        	catch(JSONException e){
+	            	Log.e("log_tag", e.toString());
+	            }
+		        
 		        
 		     }
 		  });
