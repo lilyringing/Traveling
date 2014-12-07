@@ -120,7 +120,7 @@ public class InfoWindowDialog extends DialogFragment{
 			
 			@Override
 			public void onClick(View v) {
-				DialogFragment comment = CommentDialog.newInstance(siteid);
+				DialogFragment comment = CommentDialog.newInstance(userid, siteid);
         		comment.show(fragmentManager,"Restaurant");
 			}
 		});

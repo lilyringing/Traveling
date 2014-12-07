@@ -98,7 +98,8 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	private ViewPager FavoritePager;
 	private PageAdapter pageadapter;
 	private AutoCompleteTextView searchbar;
-	ArrayList<String> slist;
+	private String[] favorite_site;
+	ArrayList<Integer> slist;
 	HashMap<String, HashMap> extraMarkerInfo;	// A data structure which is used to store detail information of markers.
 	String userid;
 	String username;
@@ -109,8 +110,8 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		
 		// Set FB login
 		if(savedInstanceState == null){			
-			fbfragment = new FBFragment();
 			if(userid == null){
+				fbfragment = new FBFragment();
 				getSupportFragmentManager().beginTransaction()
 				.add(android.R.id.content, fbfragment)
 				.commit();
@@ -119,7 +120,6 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 			}
 				
 		}else{	// Or set the fragment from restored state info
-			
 			fbfragment = (FBFragment)getSupportFragmentManager().
 						  findFragmentById(android.R.id.content);
 		}
@@ -171,7 +171,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	        			Intent intent = new Intent(MainActivity.this, SearchResultActivity.class);
 	        			intent.putExtra("search_string", s);
 	        			intent.putExtra("userid", userid);
-	        			startActivity(intent);
+	        			startActivityForResult(intent, 0);
 	        }
 	    });
 		
@@ -505,7 +505,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		setContentView(R.layout.fragment_route);
 		
 		LinearLayout ll = (LinearLayout)findViewById(R.id.site_list);
-		slist = new ArrayList<String>();
+		slist = new ArrayList<Integer>();
 		
 		try{
 			String result = DBconnector.executeQuery("SELECT * FROM `collect_s`, `site` WHERE collect_s.fb_id=" + userid + " and site.site_id=collect_s.site_id");
@@ -530,7 +530,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
     	                btn.setText(site);
     	                btn.setId(v.getId());
     	                rt.addView(btn);
-    	                slist.add(site);
+    	                slist.add(v.getId());
     	            }
     	        });
     	        
@@ -666,7 +666,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 			
 			JSONArray jsonArray = new JSONArray(result);
         	int length = jsonArray.length();
-        	String[] favorite_site = new String[length];
+        	favorite_site = new String[length];
         	
 			for(int i = 0; i < length; i++){
         		JSONObject jsonData = jsonArray.getJSONObject(i);
@@ -705,13 +705,18 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		gmap.clear();
 		extraMarkerInfo = new HashMap<String, HashMap>();
 		
-		
         try{
         	//connect to DB
     		if(title == R.string.spot){
-    			result = DBconnector.executeQuery("SELECT * FROM site WHERE tag_s=" + which);
+    			int tag_number = which + 1;
+    			result = DBconnector.executeQuery("SELECT * FROM site WHERE tag_s=" + tag_number);
+    		}else if(title == R.string.restaurant){
+    			int tag_number = which + 1;
+    			result = DBconnector.executeQuery("SELECT * FROM site WHERE tag_r=" + tag_number);
     		}else{
-    			result = DBconnector.executeQuery("SELECT * FROM site WHERE tag_r=" + which);
+    			String site_name = favorite_site[which];
+    			// get favorite site
+    			result = DBconnector.executeQuery("SELECT * FROM site WHERE site_name=" + site_name);
     		}
     		
         	JSONArray jsonArray = new JSONArray(result);
@@ -773,9 +778,9 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	        Button btn = new Button(this);
 	        btn.setText(a);
 	        rt.addView( btn );           
-	    }
+	}
 	  
-	  public void onClick_Save(final View view) {//點擊「儲存」button
+	public void onClick_Save(final View view) {//點擊「儲存」button
 		  AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		  /*dialog的設計*/
 		  builder.setTitle("Name");//標題
@@ -794,6 +799,26 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		         * slist.size()→傳回list大小(Int)
 		         * slist.get(i)→傳回第i個值(從0開始)
 		         * slist.isEmpty()→是否為空(True/False)*/
+		        try
+	        	{
+	        		//make a new travel in ownership table
+	        		String result = DBconnector.executeQuery("INSERT INTO `ownership`(`owner`) VALUES ("+userid+");" +
+	        				                                 "SELECT LAST_INSERT_ID()");
+	        		JSONArray jsonArray = new JSONArray(result);
+	        		JSONObject jsonData = jsonArray.getJSONObject(0);
+	        		//get the new inserted travel id from the sent query
+	        		int travel_id = Integer.getInteger(jsonData.getString("LAST_INSERT_ID()"));
+	        		
+	        		for( int i = 0; i < slist.size(); i++ )
+			        {
+			        	int site_id = slist.get(i);
+			        	DBconnector.executeQuery("INSERT INTO `travel`(`travel_id`, `sequence`, `site_id`) VALUES ("+travel_id+","+i+","+site_id+")");
+			        }
+	        		
+	        	}
+	        	catch(JSONException e){
+	            	Log.e("log_tag", e.toString());
+	            }
 		        
 		     }
 		  });
@@ -806,5 +831,24 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		   
 		  builder.show();    
 
-	   }
+	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent){
+		if(requestCode == 0 && resultCode == 0){
+			String latitude = intent.getStringExtra("latitude");
+			String longitude = intent.getStringExtra("longitude");
+			HashMap<String, String> d =(HashMap<String, String>)intent.getSerializableExtra("data");
+			extraMarkerInfo = new HashMap<String, HashMap>();
+				
+			MarkerOptions mark = CreateMarkerOpt(d.get("name"), latitude, longitude, d.get("phone"));
+            Marker marker = gmap.addMarker(mark);
+            extraMarkerInfo.put(marker.getId(),d);
+            
+            int lat = Integer.getInteger(latitude);
+            int lng = Integer.getInteger(longitude);
+            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 13); // Taipei 101
+    		gmap.animateCamera(update);
+  
+		}
+	}
 }

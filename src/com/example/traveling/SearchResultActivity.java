@@ -87,6 +87,10 @@ public class SearchResultActivity extends FragmentActivity{
             	data.put("phone", phone);
             	String tag_r = jsonData.getString("tag_r");
             	String tag_s = jsonData.getString("tag_s");
+            	final String latitude = jsonData.getString("latitude");
+            	data.put("latitude", latitude);
+            	final String longitude = jsonData.getString("longitude");
+            	data.put("longitude", longitude);
             	data.put("address", jsonData.getString("address"));
             	data.put("score", jsonData.getString("score"));
             	data.put("content", jsonData.getString("content"));
@@ -123,8 +127,17 @@ public class SearchResultActivity extends FragmentActivity{
             		data.put("tag", tag_r);
             	}
             	
-            	//Button showmap = (Button) v.findViewById(R.id.SiteOnMap);
-            	//showOnMap.setOnClickListener();
+            	Button showmap = (Button) v.findViewById(R.id.SiteOnMap);
+            	showmap.setOnClickListener(new OnClickListener(){
+            	    public void onClick(View v){
+            	    	Intent intent = new Intent(SearchResultActivity.this, MainActivity.class);
+	        			intent.putExtra("latitude", latitude);
+	        			intent.putExtra("longitude", longitude);
+	        			intent.putExtra("data", site_data);
+            	    	setResult(0, intent);
+            	    	finish();
+            	    }
+            	});
             	
             	tr.addView(v);
             	t.addView(tr);

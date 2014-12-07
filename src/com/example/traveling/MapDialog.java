@@ -65,10 +65,6 @@ public class MapDialog extends DialogFragment {
         		DialogFragmentListener activity = (DialogFragmentListener)getActivity();
  			    activity.MarkOnMap(t, position);
  			    dismiss();
- 			    //Log.e("item", );
-        		//view.findViewById();
-            	//mSelectedIndex = (int)id;
-            	//Toast.makeText(getActivity(), parent.getItemAtPosition(position),Toast.LENGTH_LONG ).show();
             }
         });
         
