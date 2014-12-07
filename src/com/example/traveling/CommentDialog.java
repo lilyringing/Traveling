@@ -41,8 +41,8 @@ public class CommentDialog extends DialogFragment{
 				String userid = getArguments().getString("userid");
 				float rate = scoreBar.getRating();
 				String comment = editTextComment.getText().toString();
-				String query = "INSERT INTO `comment`(`user_id`, `site_id`, `rate`, `content`) VALUES ("
-						                              +userid+", "+siteid+", "+rate+", "+comment+")";
+				String query = "INSERT INTO `comment`(`user_id`, `site_id`, `rate`, `content`) VALUES ('"
+						                              +userid+"', '"+siteid+"', '"+rate+"', '"+comment+"')";
 				DBconnector.executeQuery(query);
 			}
 		});
