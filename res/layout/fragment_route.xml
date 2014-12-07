@@ -16,15 +16,12 @@
 		    <ScrollView 
 		        android:layout_width="350px"
 		        android:layout_height="fill_parent"
-		        android:background="#878787">
+		        android:background="@color/drawer">
 				<LinearLayout
 				android:id="@+id/site_list"
 		    	android:layout_width="350px"
 		   	 	android:layout_height="fill_parent"
 		    	android:orientation="vertical" >
-		
-					
-		
 				</LinearLayout>
 		    </ScrollView>
 		     
@@ -35,8 +32,7 @@
 			android:layout_marginLeft="350px"
 			android:layout_width="fill_parent"
 		  	android:layout_height="fill_parent"
-		   	android:orientation="vertical"
-		   	android:background="#FFFF6F">
+		   	android:orientation="vertical">
 		   	
 		   	    
 			</LinearLayout>   
@@ -46,6 +42,8 @@
 		    android:layout_marginLeft="350px"
 		    android:layout_width="100px"
 		    android:layout_height="wrap_content"
+		    android:background="@color/button"
+        	android:textColor="@color/button_text"
 		    android:text="早"
 		    android:onClick="onClick_Event" />
 		   	<Button
@@ -53,6 +51,8 @@
 		    android:layout_toRightOf="@+id/m"
 		    android:layout_width="100px"
 		    android:layout_height="wrap_content"
+		    android:background="@color/button"
+        	android:textColor="@color/button_text"
 		    android:text="中"
 		    android:onClick="onClick_Event" />
 		   	<Button
@@ -60,6 +60,8 @@
 		    android:layout_toRightOf="@+id/d"
 		    android:layout_width="100px"
 		    android:layout_height="wrap_content"
+		    android:background="@color/button"
+        	android:textColor="@color/button_text"
 		    android:text="晚" 
 		    android:onClick="onClick_Event"/>
 		   	
@@ -70,6 +72,8 @@
 		    android:layout_height="wrap_content"
 		    android:gravity="center_horizontal"
 		    android:layout_alignParentBottom="true"
+		    android:background="@color/button"
+        	android:textColor="@color/button_text"
 		    android:text="儲存" 
 		    android:onClick="onClick_Save"/>
 		   	

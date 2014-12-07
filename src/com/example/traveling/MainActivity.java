@@ -504,7 +504,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	public void initRoute(){
 		setContentView(R.layout.fragment_route);
 		
-		LinearLayout ll = (LinearLayout)findViewById(R.id.site_list);
+		final LinearLayout ll = (LinearLayout)findViewById(R.id.site_list);
 		slist = new ArrayList<Integer>();
 		
 		try{
@@ -531,12 +531,13 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
     	                btn.setId(v.getId());
     	                rt.addView(btn);
     	                slist.add(v.getId());
+    	                ll.removeView(v);
     	            }
     	        });
     	        
     	        /*修改button的外觀*/
-    	        btn.setTextColor(Color.parseColor("#C6A300"));//字的色
-    	        btn.getBackground().setColorFilter(Color.parseColor("#808040"), android.graphics.PorterDuff.Mode.MULTIPLY );//背景的色
+    	        btn.setTextColor(Color.parseColor("#340100"));//字的色
+    	        btn.getBackground().setColorFilter(Color.parseColor("#c6a055"), android.graphics.PorterDuff.Mode.MULTIPLY );//背景的色
     	        ll.addView( btn );
         	}
 			
@@ -663,7 +664,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	public void showMyFavorite(View view){
 		try{
 			String result = DBconnector.executeQuery("SELECT * FROM `collect_s`, `site` WHERE collect_s.fb_id=" + userid + " and site.site_id=collect_s.site_id");
-			
+		
 			JSONArray jsonArray = new JSONArray(result);
         	int length = jsonArray.length();
         	favorite_site = new String[length];
@@ -716,7 +717,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
     		}else{
     			String site_name = favorite_site[which];
     			// get favorite site
-    			result = DBconnector.executeQuery("SELECT * FROM site WHERE site_name=" + site_name);
+    			result = DBconnector.executeQuery("SELECT * FROM site WHERE site_name=\"" + site_name + "\"");
     		}
     		
         	JSONArray jsonArray = new JSONArray(result);
@@ -833,7 +834,10 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 
 	}
 	
+	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent){
+		super.onActivityResult(requestCode, resultCode, intent);
+		
 		if(requestCode == 0 && resultCode == 0){
 			String latitude = intent.getStringExtra("latitude");
 			String longitude = intent.getStringExtra("longitude");
@@ -844,10 +848,10 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
             Marker marker = gmap.addMarker(mark);
             extraMarkerInfo.put(marker.getId(),d);
             
-            int lat = Integer.getInteger(latitude);
+            /*int lat = Integer.getInteger(latitude);
             int lng = Integer.getInteger(longitude);
             CameraUpdate update = CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 13); // Taipei 101
-    		gmap.animateCamera(update);
+    		gmap.animateCamera(update);*/
   
 		}
 	}

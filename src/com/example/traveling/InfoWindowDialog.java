@@ -2,6 +2,7 @@ package com.example.traveling;
 
 import java.util.HashMap;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.app.AlertDialog;
@@ -52,7 +53,7 @@ public class InfoWindowDialog extends DialogFragment{
 	@Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		LayoutInflater inflater = getActivity().getLayoutInflater();
+		final LayoutInflater inflater = getActivity().getLayoutInflater();
 		View v = inflater.inflate(R.layout.dialog_info, null);
 		
 		this.userid = getArguments().getString("userid");
@@ -66,7 +67,7 @@ public class InfoWindowDialog extends DialogFragment{
         
         CheckBox favorite = ((CheckBox) v.findViewById(R.id.favorite));
         String result = DBconnector.executeQuery("SELECT * FROM collect_s WHERE fb_id=" + userid + " and site_id=" + siteid);
-        Log.e("log_site", result);
+        
         if(!result.isEmpty()){
         	favorite.setChecked(true);
         }
@@ -122,6 +123,16 @@ public class InfoWindowDialog extends DialogFragment{
 			public void onClick(View v) {
 				DialogFragment comment = CommentDialog.newInstance(userid, siteid);
         		comment.show(fragmentManager,"Restaurant");
+			}
+		});
+        
+        Button Comment = ((Button) v.findViewById(R.id.showComment));
+        Comment.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				DialogFragment comments = CommentsDialog.newInstance(siteid);
+        		comments.show(fragmentManager,"Restaurant");
 			}
 		});
        
