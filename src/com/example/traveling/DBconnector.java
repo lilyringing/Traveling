@@ -45,4 +45,35 @@ public class DBconnector {
         System.out.println("Return");
         return result;
     }
+    public static String insertComment(String userid, String siteid, float rate, String comment) {
+        String result = "";
+        
+        try {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost("http://140.112.107.164/android_comment_connect.php");
+            ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("userid", userid));
+            params.add(new BasicNameValuePair("siteid", siteid));
+            params.add(new BasicNameValuePair("rate", Float.toString(rate)));
+            params.add(new BasicNameValuePair("comment", comment));
+            httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+            //view_account.setText(httpResponse.getStatusLine().toString());
+            HttpEntity httpEntity = httpResponse.getEntity();
+            InputStream inputStream = httpEntity.getContent();
+            
+            BufferedReader bufReader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"), 8);
+            StringBuilder builder = new StringBuilder();
+            String line = null;
+            while((line = bufReader.readLine()) != null) {
+                builder.append(line + "\n");
+            }
+            inputStream.close();
+            result = builder.toString();
+        } catch(Exception e) {
+             Log.e("log_tag", e.toString());
+        }
+        System.out.println("Return");
+        return result;
+    }
 }
