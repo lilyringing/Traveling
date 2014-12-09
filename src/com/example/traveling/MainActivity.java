@@ -239,6 +239,21 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 			}
 		});
 		
+		// Enabling MyLocation Layer of Google Map
+		gmap.setMyLocationEnabled(true);
+				
+		// Getting LocationManager object from System Service LOCATION_SERVICE
+		LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+		// Creating a criteria object to retrieve provider
+		Criteria criteria = new Criteria();
+
+		// Getting the name of the best provider
+		String provider = locationManager.getBestProvider(criteria, true);
+
+		// Getting Current Location
+		Location location = locationManager.getLastKnownLocation(provider);
+		
 		CameraUpdate update = CameraUpdateFactory.newLatLngZoom(new LatLng(25.033611, 121.565000), 13); // Taipei 101
 		gmap.animateCamera(update);
 	}
@@ -482,12 +497,22 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         FavoritePager.setAdapter(pageadapter);
         
         FavoritePager.setCurrentItem(position);
+        FavoritePager.setOnTouchListener(new View.OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				v.getParent().requestDisallowInterceptTouchEvent(true);
+				return false;
+			}
+		});
+        
         FavoritePager.setOnPageChangeListener(new OnPageChangeListener() {
 
             public void onPageScrollStateChanged(int arg0) {
             }
 
             public void onPageScrolled(int arg0, float arg1, int arg2) {
+            	FavoritePager.getParent().requestDisallowInterceptTouchEvent(true);
             }
 
             public void onPageSelected(int currentPage) {
@@ -645,7 +670,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         // Getting Current Location
         Location location = locationManager.getLastKnownLocation(provider);
 
-        if(location!=null){
+        /*if(location!=null){
         	// Getting latitude of the current location
         	double latitude = location.getLatitude();
 
@@ -658,7 +683,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         			           .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
         	CameraUpdate update = CameraUpdateFactory.newLatLngZoom(MyPosition, 13);
         	gmap.animateCamera(update);
-        }
+        }*/
 	}
 	
 	public void showMyFavorite(View view){
@@ -667,13 +692,14 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		
 			JSONArray jsonArray = new JSONArray(result);
         	int length = jsonArray.length();
-        	favorite_site = new String[length];
+        	favorite_site = new String[length+1];
         	
 			for(int i = 0; i < length; i++){
         		JSONObject jsonData = jsonArray.getJSONObject(i);
         		favorite_site[i] = jsonData.getString("site_name");
         	}
 			
+			favorite_site[length] = "顯示全部";
 			DialogFragment SpotDialog = MapDialog.newInstance(R.string.my_favorite, favorite_site);
 			SpotDialog.show(getSupportFragmentManager(),"Favorite");
 			
@@ -708,16 +734,21 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		
         try{
         	//connect to DB
-    		if(title == R.string.spot){
+    		if(title == R.string.spot){  			
     			int tag_number = which + 1;
     			result = DBconnector.executeQuery("SELECT * FROM site WHERE tag_s=" + tag_number);
-    		}else if(title == R.string.restaurant){
+    		}else if(title == R.string.restaurant){    			
     			int tag_number = which + 1;
     			result = DBconnector.executeQuery("SELECT * FROM site WHERE tag_r=" + tag_number);
     		}else{
     			String site_name = favorite_site[which];
+    			
     			// get favorite site
-    			result = DBconnector.executeQuery("SELECT * FROM site WHERE site_name=\"" + site_name + "\"");
+    			if(site_name.equals("顯示全部")){
+    				result = DBconnector.executeQuery("SELECT * FROM `site`, `collect_s` WHERE collect_s.fb_id=" + userid + " and site.site_id=collect_s.site_id");
+    			}else{
+    				result = DBconnector.executeQuery("SELECT * FROM site WHERE site_name=\"" + site_name + "\"");
+    			}    			
     		}
     		
         	JSONArray jsonArray = new JSONArray(result);
@@ -746,6 +777,16 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
             	data.put("open", jsonData.getString("open"));
             	data.put("ticket", jsonData.getString("ticket"));
             	data.put("website", jsonData.getString("website"));
+            	
+            	try{
+            		String comment_result = DBconnector.executeQuery("SELECT * FROM comment WHERE user_id=" + userid + " and site_id=" + site_id);
+            		JSONArray jArray = new JSONArray(comment_result);
+            		if(jArray.length() > 0){
+              	      data.put("comment", "1");
+            		}	
+            	}catch(JSONException e){
+            		data.put("comment", "0");
+                }
             	            	
             	// Mark on the map
             	MarkerOptions mark = CreateMarkerOpt(name, lat, lnt, phone);

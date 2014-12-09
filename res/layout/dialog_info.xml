@@ -24,10 +24,10 @@
 	
 	<CheckBox
 	    android:id="@+id/favorite"
-	 	android:layout_width="wrap_content"
- 		android:layout_height="wrap_content"
- 		android:layout_marginLeft="230dp"
- 		android:button="@drawable/add_to_favorite"/>
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_marginLeft="230dp"
+	    android:button="@drawable/add_to_favorite" />
 	
 	<Button
 	    android:id="@+id/tag"

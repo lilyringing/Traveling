@@ -24,12 +24,18 @@
 			android:id="@+id/titles"
 			android:layout_height="wrap_content"
 			android:layout_width="fill_parent" /> -->
-  	   
+  	       
   	   <android.support.v4.view.ViewPager
-    		android:id="@+id/favoritepager"
-    		android:layout_width="match_parent" 
-    		android:layout_height="match_parent"
-    		android:layout_below="@+id/My_Favorite"/>
+    	android:id="@+id/favoritepager"
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:layout_below="@+id/My_Favorite">
+    		<ScrollView 
+    		android:id="@+id/scroll_list"
+  	       	android:layout_width="match_parent"
+        	android:layout_height="match_parent"/>
+  	   </android.support.v4.view.ViewPager>
+  	   
         	
     </RelativeLayout>	
     

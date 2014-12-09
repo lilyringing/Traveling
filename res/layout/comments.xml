@@ -3,12 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
+	
 	<TextView
 	    android:id="@+id/commenter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
+        android:padding="3dp"
         android:textColor="@color/dialog_text"
         android:textSize="18sp"
 	    />
@@ -17,8 +18,9 @@
 	    android:id="@+id/comment_score"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content" 
+	    android:layout_below="@+id/commenter"
 	    android:layout_marginLeft="20dp"
-	    style="?android:attr/ratingBarStyleIndicator"/>
+	    style="?android:attr/ratingBarStyleSmall"/>
 	
 	<TextView
         android:id="@+id/content"
@@ -29,5 +31,11 @@
         android:padding="5dp"
         android:textColor="@color/dialog_text"
         android:textSize="18sp" />
+	
+	<View
+	    android:id="@+id/divider"
+	    android:layout_width="fill_parent"
+	    android:layout_height="2dp"
+	    android:background="@color/dialog_text"/>
 	
 </RelativeLayout>

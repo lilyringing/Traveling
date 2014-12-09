@@ -23,14 +23,14 @@
     <string-array name="spot_menu">
         <item >親子旅遊</item>
         <item >歷史古蹟</item>
-        <item >夜景</item>
         <item >夜市</item>
+        <item >夜景</item>
         <item >登山步道</item>
         <item >藝文展覽</item>
-        <item >宗教</item>
         <item >觀光農場</item>
+        <item >宗教</item>
         <item >購物</item>
-        <item >電影院</item>
+        <item >娛樂</item>
     </string-array>
     <string-array name="restaurant_menu">
         <item >早餐</item>

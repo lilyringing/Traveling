@@ -56,7 +56,7 @@
         	android:onClick="showMyFavorite"
         	android:text="@string/my_favorite" />
     		
-    		<Button
+    		<!--  <Button
 			android:id="@+id/button4"
        		android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
         	android:background="@color/button"
         	android:textColor="@color/button_text"
         	android:onClick="showMyLocation"
-        	android:text="@string/my_location" />
+        	android:text="@string/my_location" /> -->
     	</LinearLayout>
   	    </fragment>
         	

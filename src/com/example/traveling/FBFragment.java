@@ -55,11 +55,11 @@ public class FBFragment extends Fragment{
 		authButton.setReadPermissions(Arrays.asList("public_profile"));
 		
 		Session session = Session.getActiveSession();
-		if(session == null){
+		//if(session == null){
 			authButton.setVisibility(View.VISIBLE);
-		}else{
-			authButton.setVisibility(View.INVISIBLE);
-		}
+		//}else{
+			//authButton.setVisibility(View.INVISIBLE);
+		//}
 			
 		//To allow fragment receiving the onActivityResult()
 		return v;

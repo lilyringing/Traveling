@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -44,6 +45,7 @@ public class InfoWindowDialog extends DialogFragment{
         bun.putString("ticket", data.get("ticket"));
         bun.putString("website", data.get("website"));
         bun.putString("tag", data.get("tag"));
+        bun.putString("comment", data.get("comment"));
         bun.putString("userid", id);
         iw.setArguments(bun);
         iw.setFM(fm);
@@ -66,11 +68,16 @@ public class InfoWindowDialog extends DialogFragment{
         tvPhone.setText("電話: " + getArguments().getString("phone"));
         
         CheckBox favorite = ((CheckBox) v.findViewById(R.id.favorite));
-        String result = DBconnector.executeQuery("SELECT * FROM collect_s WHERE fb_id=" + userid + " and site_id=" + siteid);
-        
-        if(!result.isEmpty()){
-        	favorite.setChecked(true);
+        try{
+        	String result = DBconnector.executeQuery("SELECT * FROM collect_s WHERE fb_id=" + userid + " and site_id=" + siteid);
+        	  
+        	JSONArray jsonArray = new JSONArray(result);
+        	if(jsonArray.length() > 0){
+        	      favorite.setChecked(true);
+        	}
+        }catch(JSONException e){
         }
+
         favorite.setOnCheckedChangeListener(new OnCheckedChangeListener(){
         	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked){
         		if(isChecked){
@@ -88,13 +95,14 @@ public class InfoWindowDialog extends DialogFragment{
         tvAddress.setText("地址: " + getArguments().getString("address"));
         
         RatingBar score = ((RatingBar) v.findViewById(R.id.score));
-        score.setRating(Integer.parseInt(getArguments().getString("score")));
+        score.setRating(Float.parseFloat(getArguments().getString("score")));
         score.setOnTouchListener(new OnTouchListener() { 
         	public boolean onTouch(View v, MotionEvent event) { 
         		return true; 
         		}
         		});
-
+        final RatingBar final_score = score;	// final_score is used to update score after user make a comment
+        
         Button bTag = ((Button) v.findViewById(R.id.tag));
         bTag.setText(getArguments().getString("tag"));
         
@@ -117,14 +125,21 @@ public class InfoWindowDialog extends DialogFragment{
         Linkify.addLinks(tvWebsite, Linkify.ALL);
         
         Button bComment = ((Button) v.findViewById(R.id.comment));
-        bComment.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				DialogFragment comment = CommentDialog.newInstance(userid, siteid);
-        		comment.show(fragmentManager,"Restaurant");
-			}
-		});
+        String write_comment = getArguments().getString("comment");
+        
+        // If user has already commented, write_comment == 1, don't show "撰寫評論" button
+        if(write_comment.equals("1")){
+        	bComment.setVisibility(View.INVISIBLE);
+        }else{
+        	bComment.setOnClickListener(new View.OnClickListener() {
+    			
+    			@Override
+    			public void onClick(View v) {
+    				DialogFragment comment = CommentDialog.newInstance(userid, siteid);
+            		comment.show(fragmentManager,"Restaurant");
+    			}
+    		});
+        }
         
         Button Comment = ((Button) v.findViewById(R.id.showComment));
         Comment.setOnClickListener(new View.OnClickListener() {
