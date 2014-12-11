@@ -3,10 +3,13 @@ package com.example.traveling;
 import java.util.HashMap;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
@@ -18,12 +21,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class PageAdapter extends PagerAdapter{
+	private DownloadWebPicture loadPic;
+	private Handler mHandler;
 	private static int Page_number = 2;
 	private String userid;
 	private FragmentManager fragmentManager;
@@ -70,7 +76,7 @@ public class PageAdapter extends PagerAdapter{
 				
 				try {
 	                String result = DBconnector.executeQuery("SELECT * FROM `collect_s`, `site` WHERE collect_s.fb_id=" + userid + " and site.site_id=collect_s.site_id");
-	                Log.e("DB", result);
+	                
 	                /* When SQL results contain many data using JSONArray
 	                   If only one data use JSONObject
 	                   JSONObject jsonData = new JSONObject(result);*/
@@ -80,7 +86,9 @@ public class PageAdapter extends PagerAdapter{
 	            		HashMap<String, String> data = new HashMap<String, String>();
 	            		
 	            		JSONObject jsonData = jsonArray.getJSONObject(i);
-	                	String name = jsonData.getString("site_name");
+	                	String site_id = jsonData.getString("site_id");
+	                	data.put("siteid", site_id);
+	            		String name = jsonData.getString("site_name");
 	                	data.put("name", name);
 	                	String phone = jsonData.getString("phone");
 	                	data.put("phone", phone);
@@ -92,6 +100,16 @@ public class PageAdapter extends PagerAdapter{
 	                	data.put("open", jsonData.getString("open"));
 	                	data.put("ticket", jsonData.getString("ticket"));
 	                	data.put("website", jsonData.getString("website"));
+	                	
+	                	try{
+	                		String comment_result = DBconnector.executeQuery("SELECT * FROM comment WHERE user_id=" + userid + " and site_id=" + site_id);
+	                		JSONArray jArray = new JSONArray(comment_result);
+	                		if(jArray.length() > 0){
+	                  	      data.put("comment", "1");
+	                		}	
+	                	}catch(JSONException e){
+	                		data.put("comment", "0");
+	                    }
 	                	
 	                	final HashMap<String, String> site_data = data;
 	                	TableRow tr = new TableRow(context);
@@ -107,10 +125,28 @@ public class PageAdapter extends PagerAdapter{
 	                	});
 	                	
 	                	View v = inflater.inflate(R.layout.block, null);
+	                	final ImageView site_photo = (ImageView) v.findViewById(R.id.SitePhoto);
+	                	loadPic = new DownloadWebPicture();
+	                	mHandler = new Handler(){
+	                        @Override
+	                        public void handleMessage(Message msg) {
+	                            switch(msg.what){
+	                                case 1:
+	                                    site_photo.setImageBitmap(loadPic.getImg());
+	                                    break;
+	                            }
+	                            super.handleMessage(msg);
+	                        }
+	                    };
+	                    //url should be picture's url from database
+	                    //loadPic.handleWebPic(url, mHandler);
+	                	
 	                	TextView site_name = (TextView) v.findViewById(R.id.SiteName);
 	                	site_name.setText(name);
+	                	
 	                	TextView site_phone = (TextView)v.findViewById(R.id.SitePhone);
 	                	site_phone.setText("¹q¸Ü: "+ phone);
+	                	
 	                	Button site_label = (Button) v.findViewById(R.id.SiteLabel);
 	                	if(tag_r.equals("")){
 	                		site_label.setText(tag_s);
@@ -155,7 +191,7 @@ public class PageAdapter extends PagerAdapter{
 	               
 	            	for(int i = 0; i < jsonArray.length(); i++){
 	            		JSONObject jsonData = jsonArray.getJSONObject(i);
-	                	String site_id = jsonData.getString("site_id");
+	                	final String travelid = jsonData.getString("site_id");
 	                	
 	                	TableRow tr = new TableRow(context);
 	                	TableLayout.LayoutParams tableRowParams = new TableLayout.LayoutParams (TableLayout.LayoutParams.FILL_PARENT,TableLayout.LayoutParams.WRAP_CONTENT);
@@ -163,19 +199,13 @@ public class PageAdapter extends PagerAdapter{
 	                	tr.setLayoutParams(tableRowParams);
 	                	tr.setOnClickListener(new OnClickListener(){
 	                	    public void onClick(View v){
-	                	    	Toast.makeText(context, "Click",Toast.LENGTH_LONG ).show();
-	                	    	//HashMap<String, String> site_data;
-	                     	    //DialogFragment dialog = InfoWindowDialog.newInstance(site_data);
-	            				//dialog.show(fragmentManager,"test");
+	                	    	DialogFragment dialog = RouteInfoDialog.newInstance(travelid, userid, userid);
+	            				dialog.show(fragmentManager,"test");
 	                	    }
 	                	});
 	                	
-	                	View v = inflater.inflate(R.layout.block, null);
-	                	TextView site_name = (TextView) v.findViewById(R.id.SiteName);
-	                	site_name.setText(site_id);
-	                	TextView site_phone = (TextView)v.findViewById(R.id.SitePhone);
-	                	Button site_label = (Button) v.findViewById(R.id.SiteLabel);
-	                	//site_label.setText(getLable(tag_r, tag_s));
+	                	View v = inflater.inflate(R.layout.block_route, null);
+	                	
 	                	tr.addView(v);
 	                	t.addView(tr);
 	            	}

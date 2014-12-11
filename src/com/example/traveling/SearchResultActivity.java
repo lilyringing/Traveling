@@ -71,9 +71,54 @@ public class SearchResultActivity extends FragmentActivity{
 	
 	public void search_result(String s){		
 		LayoutInflater inflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		TableLayout t = (TableLayout)inflater.inflate(R.layout.favorite_site, null);
 		
+		// 行程
 		try{	
-			TableLayout t = (TableLayout)inflater.inflate(R.layout.favorite_site, null);
+			String result = DBconnector.executeQuery("SELECT * FROM `ownership`, `user` WHERE ownership.travel_name LIKE '%" + s + "%' and ownership.owner=user.fb_id");	
+			JSONArray jsonArray = new JSONArray(result);
+			
+			for(int i = 0; i < jsonArray.length(); i++){
+				JSONObject jsonData = jsonArray.getJSONObject(i);
+				
+				final String id = jsonData.getString("travel_id");
+				final String route_name = jsonData.getString("travel_name");
+				final String user_name = jsonData.getString("user_name");
+        		
+            	TableRow tr = new TableRow(this);
+            	TableLayout.LayoutParams tableRowParams = new TableLayout.LayoutParams (TableLayout.LayoutParams.FILL_PARENT,TableLayout.LayoutParams.WRAP_CONTENT);
+            	tableRowParams.setMargins(50, 10, 0, 10);
+            	tr.setLayoutParams(tableRowParams);
+            	tr.setOnClickListener(new OnClickListener(){
+            	    public void onClick(View v){
+            	    	DialogFragment dialog = RouteInfoDialog.newInstance(id, user_name, route_name);
+        				dialog.show(fragmentManager,"test");
+        				
+            	    }
+            	});
+            	
+            	View v = inflater.inflate(R.layout.block_route, null);
+            	TextView routeName = (TextView) v.findViewById(R.id.RouteName);
+            	routeName.setText(route_name);
+            	Button creator = (Button) v.findViewById(R.id.Router);
+            	creator.setText(user_name);
+            	
+            	tr.addView(v);
+            	t.addView(tr);
+            	
+			} // end for
+		}catch(JSONException e){
+			Log.e("log_tag", e.toString());
+        	
+			View v = inflater.inflate(R.layout.block_route, null);
+			TextView site_name = (TextView) v.findViewById(R.id.RouteName);
+			site_name.setText("沒有與"+ s + "相關的行程");
+			
+			t.addView(v);
+		}
+		
+		//景點.餐廳
+		try{	
 			String result = DBconnector.executeQuery("SELECT * FROM `site` WHERE site_name LIKE '%" + s + "%'");	
 			JSONArray jsonArray = new JSONArray(result);
         	
@@ -81,6 +126,8 @@ public class SearchResultActivity extends FragmentActivity{
 				HashMap<String, String> data = new HashMap<String, String>();
 				JSONObject jsonData = jsonArray.getJSONObject(i);        		
         		
+				String site_id = jsonData.getString("site_id");
+				data.put("siteid", site_id);
 				String name = jsonData.getString("site_name");
             	data.put("name", name);
             	String phone = jsonData.getString("phone");
@@ -97,6 +144,16 @@ public class SearchResultActivity extends FragmentActivity{
             	data.put("open", jsonData.getString("open"));
             	data.put("ticket", jsonData.getString("ticket"));
             	data.put("website", jsonData.getString("website"));
+            	
+            	try{
+            		String comment_result = DBconnector.executeQuery("SELECT * FROM comment WHERE user_id=" + userid + " and site_id=" + site_id);
+            		JSONArray jArray = new JSONArray(comment_result);
+            		if(jArray.length() > 0){
+              	      data.put("comment", "1");
+            		}	
+            	}catch(JSONException e){
+            		data.put("comment", "0");
+                }
             	
             	final HashMap<String, String> site_data = data;
         		
@@ -127,7 +184,7 @@ public class SearchResultActivity extends FragmentActivity{
             		data.put("tag", tag_r);
             	}
             	
-            	Button showmap = (Button) v.findViewById(R.id.SiteOnMap);
+            	/*Button showmap = (Button) v.findViewById(R.id.SiteOnMap);
             	showmap.setOnClickListener(new OnClickListener(){
             	    public void onClick(View v){
             	    	Intent intent = new Intent(SearchResultActivity.this, MainActivity.class);
@@ -137,14 +194,12 @@ public class SearchResultActivity extends FragmentActivity{
             	    	setResult(0, intent);
             	    	finish();
             	    }
-            	});
+            	});*/
             	
             	tr.addView(v);
             	t.addView(tr);
             	
 			} // end for
-			
-			setContentView(t);
 		}catch(JSONException e){
 			Log.e("log_tag", e.toString());
 			
@@ -153,5 +208,7 @@ public class SearchResultActivity extends FragmentActivity{
 			site_name.setText("沒有與"+ s + "相關的景點或餐廳");
 			setContentView(v);
 		}
+		
+		setContentView(t);
 	}
 }

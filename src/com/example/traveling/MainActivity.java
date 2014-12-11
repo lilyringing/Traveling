@@ -43,6 +43,7 @@ import android.widget.ExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -98,6 +99,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	private ViewPager FavoritePager;
 	private PageAdapter pageadapter;
 	private AutoCompleteTextView searchbar;
+	private ImageView imageView;
 	private String[] favorite_site;
 	ArrayList<Integer> slist;
 	HashMap<String, HashMap> extraMarkerInfo;	// A data structure which is used to store detail information of markers.
@@ -171,7 +173,8 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	        			Intent intent = new Intent(MainActivity.this, SearchResultActivity.class);
 	        			intent.putExtra("search_string", s);
 	        			intent.putExtra("userid", userid);
-	        			startActivityForResult(intent, 0);
+	        			startActivity(intent);
+	        			//startActivityForResult(intent, 0);
 	        }
 	    });
 		
@@ -492,12 +495,14 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	
 	public void initFavorite(int position){
 		setContentView(R.layout.fragment_favorite);
+
+		FavoritePager = (ViewPager) findViewById(R.id.favoritepager);
 		pageadapter = new PageAdapter(this, userid, getSupportFragmentManager());
-        FavoritePager = (ViewPager) findViewById(R.id.favoritepager);
-        FavoritePager.setAdapter(pageadapter);
-        
-        FavoritePager.setCurrentItem(position);
-        FavoritePager.setOnTouchListener(new View.OnTouchListener() {
+
+		FavoritePager.setAdapter(pageadapter);
+		FavoritePager.setCurrentItem(position);
+
+		FavoritePager.setOnTouchListener(new View.OnTouchListener() {
 			
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -521,10 +526,33 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
             }
 
         });
-        
-        //TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
-        //titleIndicator.setViewPager(FavoritePager);
 	}
+
+	
+	/*public void initFavorite(int position){
+		setContentView(R.layout.fragment_favorite);
+		pageadapter = new PageAdapter(this, userid, getSupportFragmentManager());
+        FavoritePager = (ViewPager) findViewById(R.id.favoritepager);
+        FavoritePager.setAdapter(pageadapter);
+        
+        FavoritePager.setCurrentItem(position);
+        FavoritePager.setOnPageChangeListener(new OnPageChangeListener() {
+			public void onPageSelected(int currentPage){
+				if (currentPage == ViewPager.SCROLL_STATE_DRAGGING){
+					// Prevent the ScrollView from intercepting this event now that the page is changing. 
+					// When this drag ends, the ScrollView will start accepting touch events again. 
+					sv.requestDisallowInterceptTouchEvent(true);
+				}
+			}
+			public void onPageScrollStateChanged(int arg0){
+            }
+
+            public void onPageScrolled(int arg0, float arg1, int arg2){
+            	FavoritePager.getParent().requestDisallowInterceptTouchEvent(true);
+            }
+		});
+        
+	}*/
 	
 	public void initRoute(){
 		setContentView(R.layout.fragment_route);
@@ -554,6 +582,8 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
     	                Button btn = new Button(v.getContext());
     	                btn.setText(site);
     	                btn.setId(v.getId());
+    	                btn.setTextColor(Color.parseColor("#340100"));//字的色
+    	    	        btn.getBackground().setColorFilter(Color.parseColor("#c6a055"), android.graphics.PorterDuff.Mode.MULTIPLY );//背景的色
     	                rt.addView(btn);
     	                slist.add(v.getId());
     	                ll.removeView(v);
@@ -815,11 +845,13 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	public void onClick_Event(View view) {//生成「早」「中」「晚」三個button
 		  Toast.makeText(view.getContext(), "景點", Toast.LENGTH_SHORT).show();
 		  Button b = (Button)view;
-	        String a = b.getText().toString();
-	        LinearLayout rt = (LinearLayout)findViewById(R.id.schedule);
-	        Button btn = new Button(this);
-	        btn.setText(a);
-	        rt.addView( btn );           
+	      String a = b.getText().toString();
+	      LinearLayout rt = (LinearLayout)findViewById(R.id.schedule);
+	      Button btn = new Button(this);
+	      btn.setText(a);
+	      btn.setTextColor(Color.parseColor("#340100"));//字的色
+	      btn.getBackground().setColorFilter(Color.parseColor("#c6a055"), android.graphics.PorterDuff.Mode.MULTIPLY );//背景的色
+	      rt.addView( btn );           
 	}
 	  
 	public void onClick_Save(final View view) {//點擊「儲存」button
@@ -875,7 +907,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 
 	}
 	
-	@Override
+	/*@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent){
 		super.onActivityResult(requestCode, resultCode, intent);
 		
@@ -892,8 +924,8 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
             /*int lat = Integer.getInteger(latitude);
             int lng = Integer.getInteger(longitude);
             CameraUpdate update = CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 13); // Taipei 101
-    		gmap.animateCamera(update);*/
+    		gmap.animateCamera(update);
   
 		}
-	}
+	}*/
 }
