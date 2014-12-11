@@ -1807,7 +1807,7 @@ containing a value of this type.
         public static final int action_search=0x7f0900b6;
         public static final int activity_chooser_view_content=0x7f090042;
         public static final int address=0x7f090086;
-        public static final int aftermoon=0x7f0900af;
+        public static final int afternoon=0x7f0900af;
         public static final int always=0x7f09001e;
         public static final int authButton=0x7f090097;
         public static final int beginning=0x7f090023;

@@ -8,7 +8,7 @@
 		android:id="@+id/name"
 		android:layout_height="wrap_content"
 		android:layout_width="wrap_content"
-		android:layout_marginLeft="20dp"
+		android:layout_marginLeft="5dp"
 		android:layout_alignParentLeft="true"
 		android:layout_alignParentTop="true"
 		android:padding="5dp"
@@ -18,37 +18,55 @@
 
 	<Button
 		android:id="@+id/morning"
-		android:layout_height="30dp"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
 		android:layout_marginLeft="20dp"
 		android:layout_below="@+id/name"
+		android:background="@color/button"
+        android:textColor="@color/button_text"
 		android:text="早" />
 	<ListView
 		android:id="@+id/MListView"
-		android:layout_height="match_parent"
-		android:layout_width="match_parent" />
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:layout_below="@+id/morning"
+		android:layout_marginLeft="20dp"
+		android:textColor="@color/dialog_text" />
 	
 	<Button
-		android:id="@+id/aftermoon"
-		android:layout_height="30dp"
+		android:id="@+id/afternoon"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
 		android:layout_marginLeft="20dp"
-		android:layout_below="@+id/name"
+		android:layout_below="@+id/MListView"
+		android:background="@color/button"
+        android:textColor="@color/button_text"
 		android:text="午" />
 	
 	<ListView
 		android:id="@+id/AListView"
-		android:layout_height="match_parent"
-		android:layout_width="match_parent" />
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:layout_below="@+id/afternoon"
+		android:layout_marginLeft="20dp"
+		android:textColor="@color/dialog_text"  />
 	
 	<Button
 		android:id="@+id/night"
-		android:layout_height="30dp"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
 		android:layout_marginLeft="20dp"
-		android:layout_below="@+id/name"
+		android:layout_below="@+id/AListView"
+		android:background="@color/button"
+        android:textColor="@color/button_text"
 		android:text="晚" />	
 	
 	<ListView
 		android:id="@+id/NListView"
-		android:layout_height="match_parent"
-		android:layout_width="match_parent" />
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:layout_below="@+id/night"
+		android:layout_marginLeft="20dp"
+		android:textColor="@color/dialog_text" />
 
 </RelativeLayout>

@@ -30,7 +30,8 @@ public class RouteInfoDialog extends DialogFragment{
 		return rd;
 	}
 	
-	public Dialog OnCreateDialog(Bundle SavedInstance){
+	@Override
+	public Dialog onCreateDialog(Bundle savedInstanceState){
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		View v = inflater.inflate(R.layout.route_info, null);

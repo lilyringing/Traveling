@@ -82,7 +82,7 @@ public class InfoWindowDialog extends DialogFragment{
         	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked){
         		if(isChecked){
         			// insert into DB
-        			//DBconnector.executeQuery("INSERT " + userid + " " + siteid + " INTO collect_s");
+        			DBconnector.executeQuery("INSERT INTO `collect_s`(`fb_id`, `site_id`) VALUES (" + userid + ", " + siteid + ")");
         			buttonView.setChecked(true);
         		}else{
         			// remove from DB
