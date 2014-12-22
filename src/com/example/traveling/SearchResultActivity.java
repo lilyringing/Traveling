@@ -91,7 +91,7 @@ public class SearchResultActivity extends FragmentActivity{
             	tr.setLayoutParams(tableRowParams);
             	tr.setOnClickListener(new OnClickListener(){
             	    public void onClick(View v){
-            	    	DialogFragment dialog = RouteInfoDialog.newInstance(id, user_name, route_name);
+            	    	DialogFragment dialog = RouteInfoDialog.newInstance(userid ,id, user_name, route_name);
         				dialog.show(fragmentManager,"test");
         				
             	    }

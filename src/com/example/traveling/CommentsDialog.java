@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -45,7 +46,7 @@ public class CommentsDialog extends DialogFragment{
 				JSONObject jsonData = jsonArray.getJSONObject(i);
 				View commentView = inflater.inflate(R.layout.comments, null);
 
-				TextView commenter = (TextView) commentView.findViewById(R.id.commenter);
+				Button commenter = (Button) commentView.findViewById(R.id.commenter);
 				commenter.setText(jsonData.getString("user_name"));
 
 				RatingBar score = (RatingBar) commentView.findViewById(R.id.comment_score);

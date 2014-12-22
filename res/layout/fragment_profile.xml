@@ -6,20 +6,19 @@
     android:layout_height="match_parent">
     
 	<!-- The main content view -->
-    <LinearLayout
-        android:id="@+id/content_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-        
-  	   <RelativeLayout 
-    		android:layout_width="wrap_content"
-    		android:layout_height="wrap_content"
-    		android:layout_alignParentLeft="true"
-    		android:layout_alignParentTop="true"
-    		android:layout_marginLeft="10dp"
-    		android:layout_marginTop="10dp" >
+    <RelativeLayout
+        android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:layout_alignParentLeft="true"
+    	android:layout_alignParentTop="true"
+    	android:layout_marginLeft="10dp"	
+    	android:layout_marginTop="10dp">						
 
+  	    <RelativeLayout
+  	        android:id="@+id/user_info"
+  	        android:layout_width="wrap_content"
+    		android:layout_height="wrap_content">
+  	        
   	    <!-- Photo of FB -->
     	<ImageView
         	android:id="@+id/UserPhoto"
@@ -29,7 +28,7 @@
         	android:layout_marginLeft="10dp"
         	android:layout_alignParentLeft="true"
         	android:layout_alignParentTop="true"
-        	android:src="@drawable/patti" />		
+        	android:src="@drawable/trafling" />		
 
     	<!-- Name of FB -->
     	<TextView
@@ -38,6 +37,9 @@
         	android:layout_height="wrap_content"
         	android:layout_marginLeft="130dp"
         	android:layout_alignTop="@+id/UserPhoto"
+        	android:layout_alignParentRight="true"
+        	android:textColor="@color/button_text"
+        	android:textSize="18sp"
        	 	android:text="Name" />					
         
     	<TextView
@@ -46,6 +48,9 @@
         	android:layout_height="wrap_content"
         	android:layout_marginLeft="130dp"
         	android:layout_below="@+id/UserName"
+        	android:layout_alignParentRight="true"
+        	android:textColor="@color/button_text"
+        	android:textSize="18sp"
         	android:text="Gender" />					
         
     	<TextView
@@ -54,6 +59,9 @@
         	android:layout_height="wrap_content"
         	android:layout_marginLeft="130dp"
         	android:layout_below="@+id/Gender"
+        	android:layout_alignParentRight="true"
+        	android:textColor="@color/button_text"
+        	android:textSize="18sp"
         	android:text="BirthDay" />	
         
     	<TextView
@@ -62,6 +70,9 @@
         	android:layout_height="wrap_content"
         	android:layout_marginLeft="130dp"
         	android:layout_below="@+id/Birthday"
+        	android:layout_alignParentRight="true"
+        	android:textColor="@color/button_text"
+        	android:textSize="18sp"
         	android:text="Age" />	    
   
    	 	<TextView
@@ -72,6 +83,8 @@
         	android:layout_below="@+id/Age"
         	android:text=" " />
 		
+		</RelativeLayout>
+   	 	
     	<ExpandableListView
         	android:id="@+id/elview"
         	android:layout_width="match_parent" 
@@ -79,13 +92,10 @@
         	android:background="@color/button"
         	android:drawSelectorOnTop="false"
         	android:groupIndicator="@null"
-  			android:layout_below="@id/textView5"
-  			android:childDivider="@color/transparent"
-  			
-  			 />
+  			android:layout_below="@id/user_info"
+  			android:childDivider="@color/transparent" />
     
-		</RelativeLayout>       	
-    </LinearLayout>	
+	</RelativeLayout>       	
     
 	<!-- The navigation drawer -->
     <ListView android:id="@+id/left_drawer"

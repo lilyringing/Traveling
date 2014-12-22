@@ -4,29 +4,33 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 	
-	<TextView
+	<Button
 	    android:id="@+id/commenter"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_marginLeft="20dp"
+        android:layout_marginTop="12dp"
         android:padding="3dp"
-        android:textColor="@color/dialog_text"
+        android:background="@color/tag"
+	    android:textColor="@color/dialog_text"
         android:textSize="18sp"
 	    />
 	
-	<RatingBar 
+	<RatingBar
 	    android:id="@+id/comment_score"
+	    style="?android:attr/ratingBarStyleSmall"
 	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content" 
-	    android:layout_below="@+id/commenter"
-	    android:layout_marginLeft="20dp"
-	    style="?android:attr/ratingBarStyleSmall"/>
+	    android:layout_height="wrap_content"
+	    android:layout_alignBottom="@+id/commenter"
+	    android:layout_marginLeft="22dp"
+	    android:layout_toRightOf="@+id/commenter" />
 	
 	<TextView
         android:id="@+id/content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
+        android:layout_marginTop="8dp"
         android:layout_below="@+id/comment_score"
         android:padding="5dp"
         android:textColor="@color/dialog_text"

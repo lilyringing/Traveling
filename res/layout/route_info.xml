@@ -16,31 +16,71 @@
 		android:textSize="22sp"
 		android:textStyle="bold" />
 
+	<CheckBox
+	    android:id="@+id/favorite"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_marginLeft="230dp"
+	    android:button="@drawable/add_to_favorite" />
+	
+	<Button
+	    android:id="@+id/router"
+	    android:layout_width="wrap_content"
+	    android:layout_height="30dp"
+	    android:layout_marginLeft="20dp"
+	    android:layout_below="@id/name"
+	    android:padding="3dp"
+	    android:background="@color/tag"
+	    android:textColor="@color/dialog_text"
+	    android:textSize="20sp" />
+	
+	<View
+	    android:id="@+id/divider1"
+	    android:layout_width="fill_parent"
+	    android:layout_height="2dp"
+	    android:layout_below="@id/router"
+	    android:layout_marginTop="5dp"
+	    android:background="@color/dialog_text"/>
+	
 	<Button
 		android:id="@+id/morning"
-		android:layout_height="wrap_content"
+		android:layout_height="30dp"
 		android:layout_width="wrap_content"
+		android:layout_below="@+id/divider1"
 		android:layout_marginLeft="20dp"
-		android:layout_below="@+id/name"
-		android:background="@color/button"
-        android:textColor="@color/button_text"
+		android:layout_marginTop="8dp"
+		android:background="@color/tag"
+        android:textColor="@color/dialog_text"
+        android:textSize="18sp"
 		android:text="早" />
 	<ListView
 		android:id="@+id/MListView"
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
 		android:layout_below="@+id/morning"
-		android:layout_marginLeft="20dp"
+		android:layout_marginLeft="30dp"
+		android:layout_toRightOf="@id/morning"
+		android:divider="@color/transparent"
 		android:textColor="@color/dialog_text" />
+	
+	<View
+	    android:id="@+id/divider2"
+	    android:layout_width="fill_parent"
+	    android:layout_height="2dp"
+	    android:layout_below="@+id/MListView"
+	    android:layout_marginTop="5dp"
+	    android:background="@color/dialog_text"/>
 	
 	<Button
 		android:id="@+id/afternoon"
-		android:layout_height="wrap_content"
+		android:layout_height="30dp"
 		android:layout_width="wrap_content"
+		android:layout_below="@+id/divider2"
 		android:layout_marginLeft="20dp"
-		android:layout_below="@+id/MListView"
-		android:background="@color/button"
-        android:textColor="@color/button_text"
+		android:layout_marginTop="8dp"
+		android:background="@color/tag"
+        android:textColor="@color/dialog_text"
+        android:textSize="18sp"
 		android:text="午" />
 	
 	<ListView
@@ -48,17 +88,29 @@
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
 		android:layout_below="@+id/afternoon"
-		android:layout_marginLeft="20dp"
+		android:layout_marginLeft="30dp"
+		android:layout_toRightOf="@id/afternoon"
+		android:divider="@color/transparent"
 		android:textColor="@color/dialog_text"  />
+	
+	<View
+	    android:id="@+id/divider3"
+	    android:layout_width="fill_parent"
+	    android:layout_height="2dp"
+	    android:layout_below="@+id/AListView"
+	    android:layout_marginTop="5dp"
+	    android:background="@color/dialog_text"/>
 	
 	<Button
 		android:id="@+id/night"
-		android:layout_height="wrap_content"
+		android:layout_height="30dp"
 		android:layout_width="wrap_content"
+		android:layout_below="@+id/divider3"
 		android:layout_marginLeft="20dp"
-		android:layout_below="@+id/AListView"
-		android:background="@color/button"
-        android:textColor="@color/button_text"
+		android:layout_marginTop="8dp"
+		android:background="@color/tag"
+        android:textColor="@color/dialog_text"
+        android:textSize="18sp"
 		android:text="晚" />	
 	
 	<ListView
@@ -66,7 +118,14 @@
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
 		android:layout_below="@+id/night"
-		android:layout_marginLeft="20dp"
+		android:layout_marginLeft="30dp"
+		android:layout_toRightOf="@id/night"
+		android:divider="@color/transparent"
 		android:textColor="@color/dialog_text" />
-
+	
+	<View
+	    android:layout_width="fill_parent"
+	    android:layout_height="10dp"
+	    android:layout_below="@+id/NListView"/>
+	    
 </RelativeLayout>

@@ -1,5 +1,6 @@
 package com.example.traveling;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.json.JSONArray;
@@ -182,7 +183,8 @@ public class PageAdapter extends PagerAdapter{
 				t = (TableLayout)inflater.inflate(R.layout.favorite_route, null);
 				
 				try {
-					String result = DBconnector.executeQuery("SELECT * FROM `collect_t`, `travel` WHERE collect_t.fb_id=" + userid + " and travel.travel_id=collect_t.travel_id");
+					String result = DBconnector.executeQuery("SELECT * FROM `collect_t`, `ownership`, `user` WHERE collect_t.fb_id=" + userid + " and ownership.travel_id=collect_t.travel_id"
+							+ " and ownership.owner=user.fb_id");
 	                
 	                /* When SQL results contain many data using JSONArray
 	                   If only one data use JSONObject
@@ -191,20 +193,28 @@ public class PageAdapter extends PagerAdapter{
 	               
 	            	for(int i = 0; i < jsonArray.length(); i++){
 	            		JSONObject jsonData = jsonArray.getJSONObject(i);
-	                	final String travelid = jsonData.getString("site_id");
+	                	final String travelid = jsonData.getString("travel_id");
+	            		final String travel_name = jsonData.getString("travel_name");
+	            		final String creator = jsonData.getString("user_name");
 	                	
 	                	TableRow tr = new TableRow(context);
 	                	TableLayout.LayoutParams tableRowParams = new TableLayout.LayoutParams (TableLayout.LayoutParams.FILL_PARENT,TableLayout.LayoutParams.WRAP_CONTENT);
-	                	tableRowParams.setMargins(50, 10, 0, 10);
+	                	tableRowParams.setMargins(150, 20, 0, 20);
 	                	tr.setLayoutParams(tableRowParams);
 	                	tr.setOnClickListener(new OnClickListener(){
 	                	    public void onClick(View v){
-	                	    	DialogFragment dialog = RouteInfoDialog.newInstance(travelid, userid, userid);
+	                	    	DialogFragment dialog = RouteInfoDialog.newInstance(userid, travelid, creator, travel_name);
 	            				dialog.show(fragmentManager,"test");
 	                	    }
 	                	});
 	                	
 	                	View v = inflater.inflate(R.layout.block_route, null);
+	                	
+	                	TextView route_name = (TextView) v.findViewById(R.id.RouteName);
+	                	route_name.setText(travel_name);
+	                	
+	                	Button route_creator = (Button) v.findViewById(R.id.Router);
+	                	route_creator.setText(creator);
 	                	
 	                	tr.addView(v);
 	                	t.addView(tr);
@@ -214,7 +224,7 @@ public class PageAdapter extends PagerAdapter{
 	                 Log.e("log_tag", e.toString());
 	                 TableRow tr = new TableRow(context);
 	                	TableLayout.LayoutParams tableRowParams = new TableLayout.LayoutParams (TableLayout.LayoutParams.FILL_PARENT,TableLayout.LayoutParams.WRAP_CONTENT);
-	                	tableRowParams.setMargins(50, 10, 0, 10);
+	                	tableRowParams.setMargins(150, 20, 0, 20);
 	                	tr.setLayoutParams(tableRowParams);
 	                 View v = inflater.inflate(R.layout.block, null);
 	                	TextView site_name = (TextView) v.findViewById(R.id.SiteName);

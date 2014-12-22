@@ -6,26 +6,19 @@
     android:layout_height="match_parent">
     
 	<!-- The main content view -->
-  	<TableLayout
-        android:id="@+id/content_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
-        <TableRow
-    		android:layout_width="match_parent"
-        	android:layout_height="match_parent"
-    		android:background="@color/bar">
-    		
-            <TextView
+  	<LinearLayout
+  	    android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        	    
+  	<ImageView
+        	android:id="@+id/about_tfl"
         	android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
+        	android:layout_marginTop="100dp"
         	android:layout_marginLeft="10dp"
-        	android:textSize="20sp"
-        	android:textColor="@color/button_text"
-        	android:text="記錄生活，享受生活，讓崔佛羚陪你一起探索生命中的美好樂趣！" />	
-    	</TableRow>
-     </TableLayout>	
+        	android:layout_gravity="center_horizontal"
+        	android:src="@drawable/about" />	
+    </LinearLayout>
     
 	<!-- The navigation drawer -->
     <ListView android:id="@+id/left_drawer"

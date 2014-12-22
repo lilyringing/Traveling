@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Gravity;
@@ -57,6 +58,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
+import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
@@ -98,6 +100,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	private FBFragment fbfragment;
 	private ViewPager FavoritePager;
 	private PageAdapter pageadapter;
+	private PagerTabStrip PagerTab;
 	private AutoCompleteTextView searchbar;
 	private ImageView imageView;
 	private String[] favorite_site;
@@ -394,7 +397,8 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         /*第二層列表_收藏路線*/
         List<Map<String, String>> child2 = new ArrayList<Map<String, String>>();
         try {
-            String result = DBconnector.executeQuery("SELECT travel_id FROM collect_t WHERE fb_id=" + userid);
+        	String result = DBconnector.executeQuery("SELECT * FROM `collect_t`, `ownership`, `user` WHERE collect_t.fb_id=" + userid + " and ownership.travel_id=collect_t.travel_id"
+					+ " and ownership.owner=user.fb_id");
             
             /* When SQL results contain many data using JSONArray
                If only one data use JSONObject
@@ -405,7 +409,9 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
             
         	for(int i = 0; i < show_size; i++){
         		JSONObject jsonData = jsonArray.getJSONObject(i);
-            	String route_name = jsonData.getString("travel_id");
+        		String travelid = jsonData.getString("travel_id");
+        		String route_name = jsonData.getString("travel_name");
+        		String creator = jsonData.getString("user_name");
             	
             	Map<String, String> child2Data = new HashMap<String, String>();
                 child2Data.put("child", route_name);
@@ -425,7 +431,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         /*第二層列表_我的路線*/
         List<Map<String, String>> child3 = new ArrayList<Map<String, String>>();
         try {
-            String result = DBconnector.executeQuery("SELECT travel_id FROM ownership WHERE owner=" + userid);
+            String result = DBconnector.executeQuery("SELECT travel_name FROM ownership WHERE owner=" + userid);
             
             /* When SQL results contain many data using JSONArray
                If only one data use JSONObject
@@ -436,7 +442,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
            
         	for(int i = 0; i < show_size; i++){
         		JSONObject jsonData = jsonArray.getJSONObject(i);
-            	String route_name = jsonData.getString("travel_id");
+            	String route_name = jsonData.getString("travel_name");
             	
             	Map<String, String> child3Data = new HashMap<String, String>();
                 child3Data.put("child", route_name);
@@ -496,7 +502,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	public void initFavorite(int position){
 		setContentView(R.layout.fragment_favorite);
 
-		FavoritePager = (ViewPager) findViewById(R.id.favoritepager);
+		FavoritePager = (ViewPager) findViewById(R.id.favoritepager);		
 		pageadapter = new PageAdapter(this, userid, getSupportFragmentManager());
 
 		FavoritePager.setAdapter(pageadapter);
@@ -527,32 +533,6 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 
         });
 	}
-
-	
-	/*public void initFavorite(int position){
-		setContentView(R.layout.fragment_favorite);
-		pageadapter = new PageAdapter(this, userid, getSupportFragmentManager());
-        FavoritePager = (ViewPager) findViewById(R.id.favoritepager);
-        FavoritePager.setAdapter(pageadapter);
-        
-        FavoritePager.setCurrentItem(position);
-        FavoritePager.setOnPageChangeListener(new OnPageChangeListener() {
-			public void onPageSelected(int currentPage){
-				if (currentPage == ViewPager.SCROLL_STATE_DRAGGING){
-					// Prevent the ScrollView from intercepting this event now that the page is changing. 
-					// When this drag ends, the ScrollView will start accepting touch events again. 
-					sv.requestDisallowInterceptTouchEvent(true);
-				}
-			}
-			public void onPageScrollStateChanged(int arg0){
-            }
-
-            public void onPageScrolled(int arg0, float arg1, int arg2){
-            	FavoritePager.getParent().requestDisallowInterceptTouchEvent(true);
-            }
-		});
-        
-	}*/
 	
 	public void initRoute(){
 		setContentView(R.layout.fragment_route);
@@ -582,7 +562,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
     	                Button btn = new Button(v.getContext());
     	                btn.setText(site);
     	                btn.setId(v.getId());
-    	                btn.setTextColor(Color.parseColor("#340100"));//字的色
+    	                btn.setTextColor(getResources().getColor(R.color.button_text)); 		
     	    	        btn.getBackground().setColorFilter(Color.parseColor("#c6a055"), android.graphics.PorterDuff.Mode.MULTIPLY );//背景的色
     	                rt.addView(btn);
     	                slist.add(v.getId());
@@ -591,7 +571,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
     	        });
     	        
     	        /*修改button的外觀*/
-    	        btn.setTextColor(Color.parseColor("#340100"));//字的色
+    	        btn.setTextColor(getResources().getColor(R.color.button_text));
     	        btn.getBackground().setColorFilter(Color.parseColor("#c6a055"), android.graphics.PorterDuff.Mode.MULTIPLY );//背景的色
     	        ll.addView( btn );
         	}
@@ -603,6 +583,51 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	}
 	
 	public void initSocial(){
+		setContentView(R.layout.fragment_social);
+
+		TableLayout t = (TableLayout)findViewById(R.id.social_route);
+		
+		try {
+			String result = DBconnector.executeQuery("SELECT * FROM `collect_t`, `ownership`, `user` WHERE collect_t.fb_id=" + userid + " and ownership.travel_id=collect_t.travel_id"
+					+ " and ownership.owner=user.fb_id");
+            
+            /* When SQL results contain many data using JSONArray
+               If only one data use JSONObject
+               JSONObject jsonData = new JSONObject(result);*/
+            JSONArray jsonArray = new JSONArray(result);
+           
+        	for(int i = 0; i < jsonArray.length(); i++){
+        		JSONObject jsonData = jsonArray.getJSONObject(i);
+            	final String travelid = jsonData.getString("travel_id");
+        		final String travel_name = jsonData.getString("travel_name");
+        		final String creator = jsonData.getString("user_name");
+            	
+            	TableRow tr = new TableRow(this);
+            	TableLayout.LayoutParams tableRowParams = new TableLayout.LayoutParams (TableLayout.LayoutParams.FILL_PARENT,TableLayout.LayoutParams.WRAP_CONTENT);
+            	tableRowParams.setMargins(150, 20, 0, 20);
+            	tr.setLayoutParams(tableRowParams);
+            	tr.setOnClickListener(new OnClickListener(){
+            	    public void onClick(View v){
+            	    	DialogFragment dialog = RouteInfoDialog.newInstance(userid, travelid, creator, travel_name);
+        				dialog.show(getSupportFragmentManager(),"test");
+            	    }
+            	});
+            	
+            	View v = getLayoutInflater().inflate(R.layout.block_route, null);
+            	
+            	TextView route_name = (TextView) v.findViewById(R.id.RouteName);
+            	route_name.setText(travel_name);
+            	
+            	Button route_creator = (Button) v.findViewById(R.id.Router);
+            	route_creator.setText(creator);
+            	
+            	tr.addView(v);
+            	t.addView(tr);
+        	}
+        	
+        } catch(Exception e) {
+             Log.e("log_tag", e.toString());
+        }
 		
 	}
 	
@@ -616,16 +641,18 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		for(int i = 0; i < 4; i++){
 			TableRow tr = new TableRow(this);
 			TableLayout.LayoutParams tableRowParams = new TableLayout.LayoutParams (TableLayout.LayoutParams.FILL_PARENT,TableLayout.LayoutParams.WRAP_CONTENT);
-        	tableRowParams.setMargins(50, 10, 0, 10);
+        	tableRowParams.setMargins(150, 20, 0, 20);
         	tr.setLayoutParams(tableRowParams);
 
-    		TextView name = new TextView(this);
+        	View v = getLayoutInflater().inflate(R.layout.block_route, null);
+        	
+        	TextView name = (TextView) v.findViewById(R.id.RouteName);
     		name.setText(namelist[i]);
     		
-    		TextView mail = new TextView(this);
-    		mail.setText("信箱: "+ maillist[i]);
-    		tr.addView(name);
-        	tr.addView(mail);
+    		Button mail = (Button) v.findViewById(R.id.Router);;
+    		mail.setText(maillist[i]);
+    		
+    		tr.addView(v);
         	t.addView(tr);
 		}
 		
@@ -657,7 +684,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 					initRoute();
 					view = 3;
 					break;
-				case 4:
+				case 4: // Social
 					initSocial();
 					view = 4;
 					break;
@@ -876,12 +903,14 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		        try
 	        	{
 	        		//make a new travel in ownership table
-	        		String result = DBconnector.executeQuery("INSERT INTO `ownership`(`owner`) VALUES ("+userid+");" +
-	        				                                 "SELECT LAST_INSERT_ID()");
+		        	DBconnector.executeQuery("INSERT INTO `ownership`(`owner`) VALUES ('"+userid+"')");
+	        		String result = DBconnector.executeQuery("SELECT LAST_INSERT_ID()");
+		        	
 	        		JSONArray jsonArray = new JSONArray(result);
 	        		JSONObject jsonData = jsonArray.getJSONObject(0);
 	        		//get the new inserted travel id from the sent query
-	        		int travel_id = Integer.getInteger(jsonData.getString("LAST_INSERT_ID()"));
+	        		int travel_id = Integer.parseInt(jsonData.getString("LAST_INSERT_ID()"));
+	        		travel_id = travel_id + 1;
 	        		
 	        		for( int i = 0; i < slist.size(); i++ )
 			        {

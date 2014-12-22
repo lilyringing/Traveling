@@ -86,6 +86,7 @@ public class InfoWindowDialog extends DialogFragment{
         			buttonView.setChecked(true);
         		}else{
         			// remove from DB
+        			DBconnector.executeQuery("DELETE FROM `collect_s` WHERE `collect_s`.`fb_id` = "+ userid + " AND `collect_s`.`site_id` = "+ siteid);
         			buttonView.setChecked(false);
         		}
         	}
