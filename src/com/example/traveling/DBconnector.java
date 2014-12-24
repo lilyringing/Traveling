@@ -50,7 +50,7 @@ public class DBconnector {
         
         try {
             HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost("http://miku.myds.me/webs/android_dbconnect.php");
+            HttpPost httpPost = new HttpPost("http://miku.myds.me/webs/android_comment_connect.php");
             ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("userid", userid));
             params.add(new BasicNameValuePair("siteid", siteid));
