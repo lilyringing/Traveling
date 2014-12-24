@@ -25,7 +25,7 @@
         	android:layout_width="100dp"
         	android:layout_height="100dp"
         	android:layout_marginTop="10dp"
-        	android:layout_marginLeft="10dp"
+        	android:layout_marginLeft="50dp"
         	android:layout_alignParentLeft="true"
         	android:layout_alignParentTop="true"
         	android:src="@drawable/trafling" />		
@@ -35,9 +35,8 @@
         	android:id="@+id/UserName"
         	android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
-        	android:layout_marginLeft="130dp"
+        	android:layout_marginLeft="140dp"
         	android:layout_alignTop="@+id/UserPhoto"
-        	android:layout_alignParentRight="true"
         	android:textColor="@color/button_text"
         	android:textSize="18sp"
        	 	android:text="Name" />					
@@ -46,9 +45,8 @@
         	android:id="@+id/Gender"
         	android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
-        	android:layout_marginLeft="130dp"
+        	android:layout_marginLeft="140dp"
         	android:layout_below="@+id/UserName"
-        	android:layout_alignParentRight="true"
         	android:textColor="@color/button_text"
         	android:textSize="18sp"
         	android:text="Gender" />					
@@ -57,9 +55,8 @@
         	android:id="@+id/Birthday"
         	android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
-        	android:layout_marginLeft="130dp"
+        	android:layout_marginLeft="140dp"
         	android:layout_below="@+id/Gender"
-        	android:layout_alignParentRight="true"
         	android:textColor="@color/button_text"
         	android:textSize="18sp"
         	android:text="BirthDay" />	
@@ -68,20 +65,11 @@
         	android:id="@+id/Age"
         	android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
-        	android:layout_marginLeft="130dp"
+        	android:layout_marginLeft="140dp"
         	android:layout_below="@+id/Birthday"
-        	android:layout_alignParentRight="true"
         	android:textColor="@color/button_text"
         	android:textSize="18sp"
         	android:text="Age" />	    
-  
-   	 	<TextView
-        	android:id="@+id/textView5"
-        	android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-        	android:layout_marginLeft="130dp"
-        	android:layout_below="@+id/Age"
-        	android:text=" " />
 		
 		</RelativeLayout>
    	 	
@@ -89,7 +77,6 @@
         	android:id="@+id/elview"
         	android:layout_width="match_parent" 
         	android:layout_height="fill_parent"
-        	android:background="@color/button"
         	android:drawSelectorOnTop="false"
         	android:groupIndicator="@null"
   			android:layout_below="@id/user_info"

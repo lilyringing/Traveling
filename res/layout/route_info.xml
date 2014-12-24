@@ -39,7 +39,7 @@
 	    android:layout_width="fill_parent"
 	    android:layout_height="2dp"
 	    android:layout_below="@id/router"
-	    android:layout_marginTop="5dp"
+	    android:layout_marginTop="10dp"
 	    android:background="@color/dialog_text"/>
 	
 	<Button
@@ -68,7 +68,7 @@
 	    android:layout_width="fill_parent"
 	    android:layout_height="2dp"
 	    android:layout_below="@+id/MListView"
-	    android:layout_marginTop="5dp"
+	    android:layout_marginTop="10dp"
 	    android:background="@color/dialog_text"/>
 	
 	<Button
@@ -98,7 +98,7 @@
 	    android:layout_width="fill_parent"
 	    android:layout_height="2dp"
 	    android:layout_below="@+id/AListView"
-	    android:layout_marginTop="5dp"
+	    android:layout_marginTop="10dp"
 	    android:background="@color/dialog_text"/>
 	
 	<Button

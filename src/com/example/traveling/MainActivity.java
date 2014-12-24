@@ -315,7 +315,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
 	    @Override
 	    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-	        selectItem(position);
+	        selectItem(position, 0);
 	    }
 	}
 	
@@ -342,7 +342,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         		name.setText(jsonData.getString("user_name"));
         		gender.setText(jsonData.getString("gender"));
         		birthday.setText(jsonData.getString("birthday"));
-        		age.setText(jsonData.getString("age"));
+        		age.setText(jsonData.getString("age") + "歲");
         	}
         } catch(Exception e) {
              Log.e("log_tag_user", e.toString());
@@ -480,10 +480,10 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         		if(title.equals("more")){
         			switch(groupPosition){
         				case 0:
-        					selectItem(2);
+        					selectItem(2, 0);
         					break;
         				case 1:
-        					selectItem(2);
+        					selectItem(2, 1);
         					break;
         				case 2:
         					break;
@@ -491,7 +491,16 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
         					break;
         			}
         		}else{
-        			
+        			switch(groupPosition){
+	    				case 0:
+	    					break;
+	    				case 1:
+	    					break;
+	    				case 2:
+	    					break;
+    				default:
+    					break;
+    			}
         		}
         		
 				return false; 
@@ -588,8 +597,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		TableLayout t = (TableLayout)findViewById(R.id.social_route);
 		
 		try {
-			String result = DBconnector.executeQuery("SELECT * FROM `collect_t`, `ownership`, `user` WHERE collect_t.fb_id=" + userid + " and ownership.travel_id=collect_t.travel_id"
-					+ " and ownership.owner=user.fb_id");
+			String result = DBconnector.executeQuery("SELECT a.`travel_id`, COUNT(*), b.`travel_name`, c.`user_name` FROM `collect_t` AS a, `ownership` AS b, `user` AS c WHERE a.`travel_id` = b.`travel_id` AND b.`owner` = c.`fb_id` GROUP BY `travel_id` ORDER BY COUNT(*) DESC");
             
             /* When SQL results contain many data using JSONArray
                If only one data use JSONObject
@@ -616,6 +624,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
             	View v = getLayoutInflater().inflate(R.layout.block_route, null);
             	
             	TextView route_name = (TextView) v.findViewById(R.id.RouteName);
+            	//route_name.setText(travelid);
             	route_name.setText(travel_name);
             	
             	Button route_creator = (Button) v.findViewById(R.id.Router);
@@ -663,7 +672,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 	}
 	
 	/* Change main content view when click items in the drawer */ 
-	private void selectItem(int position){
+	private void selectItem(int position, int argument){
 		String[] drawer_menu = this.getResources().getStringArray(R.array.drawer_menu);
 		
 		if(view != position){
@@ -677,7 +686,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 					view = 1;
 					break;
 				case 2:	// Favorite
-					initFavorite(0);
+					initFavorite(argument);
 					view = 2;
 					break;
 				case 3: // Route
@@ -903,7 +912,7 @@ public class MainActivity extends FragmentActivity implements MapDialog.DialogFr
 		        try
 	        	{
 	        		//make a new travel in ownership table
-		        	DBconnector.executeQuery("INSERT INTO `ownership`(`owner`) VALUES ('"+userid+"')");
+		        	DBconnector.executeQuery("INSERT INTO `ownership`(`owner`, `travel_name`) VALUES ('"+userid+"', "+name+")");
 	        		String result = DBconnector.executeQuery("SELECT LAST_INSERT_ID()");
 		        	
 	        		JSONArray jsonArray = new JSONArray(result);

@@ -6,14 +6,35 @@
     android:layout_height="match_parent">
     
 	<!-- The main content view -->  	
-  	<TableLayout	
-        android:id="@+id/social_route"
+  	<RelativeLayout
+  	    android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
         android:orientation="horizontal">
         
-	</TableLayout>
+  	    <ImageView
+        	android:id="@+id/Social"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:layout_alignParentTop="true"
+        	android:src="@drawable/social" />
+  	
+  		<ScrollView
+  		    android:id="@+id/scroll_route"
+  		    android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_centerInParent="true"
+			android:layout_below="@+id/Social"
+			android:fillViewport="true">
+  		    
+  			<TableLayout	
+		        android:id="@+id/social_route"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="horizontal" />
+  		</ScrollView>
+  		
+    </RelativeLayout>
     
 	<!-- The navigation drawer -->
     <ListView android:id="@+id/left_drawer"
